@@ -136,3 +136,8 @@ _book/
 /.luarc.json
 
 *.sentinel
+
+.gwf/
+_freeze/
+manuscript/_freeze/
+slides/_freeze/

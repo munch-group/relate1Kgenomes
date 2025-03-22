@@ -153,8 +153,8 @@ def convert_vcf(phased_haplotypes, phased_haplotypes_poplabels):
     """
     Define the function to convert VCF to haps/sample format
     """
-    phased_haplotypes_haps = modify_path(phased_haplotypes, suffix='.haps.gz')
-    phased_haplotypes_sample = modify_path(phased_haplotypes, suffix='.sample.gz')
+    phased_haplotypes_haps = modify_path(phased_haplotypes, suffix='.haps')
+    phased_haplotypes_sample = modify_path(phased_haplotypes, suffix='.sample')
     inputs = [phased_haplotypes_poplabels, phased_haplotypes]
     outputs = {'haps': phased_haplotypes_haps, 'sample': phased_haplotypes_sample}
     options = {'memory': '10g', 'walltime': '01:00:00'}
@@ -264,14 +264,17 @@ def prepare_files(exclude_list, population=None, haps=None, sample=None, ancesto
               'poplabels':poplabels, 
               'exclude_list':exclude_list}
     output_path = os.path.join(output_dir, 'haplotypes')
-    outputs = {'haps': output_path + '.haps.gz', 
-               'sample': output_path + '.sample.gz', 
-               'dist': output_path + '.dist.gz', 
-               'poplabels': output_path + '.poplabels',
-               'annot': output_path + '.annot'} 
+    outputs = {'haps': f'{output_path}.haps.gz', 
+               'sample': f'{output_path}.sample.gz', 
+               'dist': f'{output_path}.dist.gz', 
+               'poplabels': f'{output_path}.poplabels',
+               'annot': f'{output_path}.annot'} 
     options = {'memory': '20g', 'walltime': '10:00:00'}
     spec = f'''
     mkdir -p {output_dir}
+    rm -f {output_path}.haps.gz
+    rm -f {output_path}.sample.gz
+    rm -f {output_path}.dist.gz
     {config['relate_dist_dir']}/scripts/PrepareInputFiles/PrepareInputFiles.sh --haps {haps} --sample {sample} --ancestor {ancestor} --mask {mask} --remove_ids {exclude_list} --poplabels {poplabels} -o {output_path}
     sleep 20
     '''
