@@ -28,9 +28,9 @@ comments:
 lightbox: true
 
 book:
-  repo-url: "https://github.com/munch-group/projectname"
+  repo-url: "https://github.com/munch-group/relate1Kgenomes"
   repo-actions: [edit, issue, source]  
-  title: "projectname"
+  title: "relate1Kgenomes"
   author: "Joanna Doh"  
   sidebar:
     collapse-level: 1
