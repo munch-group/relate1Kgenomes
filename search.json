@@ -1,0 +1,562 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "relate1Kgenomes",
+    "section": "",
+    "text": "Preface\nThese pages are generated from a Git repository…",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#section",
+    "href": "index.html#section",
+    "title": "relate1Kgenomes",
+    "section": "Section",
+    "text": "Section\nVestibulum ultrices, tortor at mattis porta, odio nisi rutrum nulla, sit amet tincidunt eros quam facilisis tellus. Fusce eleifend lectus in elementum lacinia. Nam auctor nunc in massa ullamcorper, sit amet auctor ante accumsan. Nam ut varius metus. Curabitur eget tristique leo. Cras finibus euismod erat eget elementum. Integer vel placerat ex. Ut id eros quis lectus lacinia venenatis hendrerit vel ante.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#section-1",
+    "href": "index.html#section-1",
+    "title": "relate1Kgenomes",
+    "section": "Section",
+    "text": "Section\nEtiam quis tortor luctus, pellentesque ante a, finibus dolor. Phasellus in nibh et magna pulvinar malesuada. Ut nisl ex, sagittis at sollicitudin et, sollicitudin id nunc. In id porta urna. Proin porta dolor dolor, vel dapibus nisi lacinia in. Pellentesque ante mauris, ornare non euismod a, fermentum ut sapien. Proin sed vehicula enim. Aliquam tortor odio, vestibulum vitae odio in, tempor molestie justo. Praesent maximus lacus nec leo maximus blandit.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "relate1Kgenomes",
+    "section": "Install",
+    "text": "Install\nconda install -c conda-forge git git-lfs\ngit lfs install",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#configure",
+    "href": "index.html#configure",
+    "title": "relate1Kgenomes",
+    "section": "Configure",
+    "text": "Configure\ngit lfs track \"*.h5\"\ngit add .gitattributes ; git commit -m 'Added LFS' ; git push\nFrom now, on all h5 files add added to the repo will go on lfs.\nhttps://docs.github.com/en/repositories/working-with-files/managing-large-files/configuring-git-large-file-storage",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#managing-files",
+    "href": "index.html#managing-files",
+    "title": "relate1Kgenomes",
+    "section": "Managing files",
+    "text": "Managing files\n\n\n\n\n\n\nWarning\n\n\n\nManaging files is for the PI only.\n\n\nhttps://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/managing-git-lfs-objects-in-archives-of-your-repository # Submodules\nSubmodules are useful if you have analysis components that are used across many projects or if results from several past/ongoing projects need to be integrated in a project as a third-party library.\nThe repos can each have their own adjustable workflow as decribed here, that are then easily put together in a larger workflow as described here.\n\n\n\n\n\n\nImportant\n\n\n\nMake sure you install the current version of Git in your environments. The one on the cluster is ancient.\nconda install -c conda-forge git\nI also set these configs for each environment to get nicer/safer commands (commands below assume these are set):\ngit config --global diff.submodule log\ngit config status.submodulesummary 1\ngit config push.recurseSubmodules check",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#tldr",
+    "href": "index.html#tldr",
+    "title": "relate1Kgenomes",
+    "section": "TLDR;",
+    "text": "TLDR;\n# clone repository as submodule\ngit submodule add git@github.com:munch-group/${REPO}.git\n\n# initialize it\ngit submodule init ${REPO} # initialize it\n\n# and pull the current state of the submodule repo\ngit submodule update ${REPO}\n\n# track new .gitmodules\ngit add .gitmodules ${REPO} && git commit -m \"Added ${REPO} as submodule\" && git push \n\n# checkout main or some other branch)\ncd ${REPO} && git checkout main && cd .. \n\n# config sensible defaults for diff, status, and push\ngit config --global diff.submodule log\ngit config status.submodulesummary 1\ngit config push.recurseSubmodules check",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#add-a-submodule",
+    "href": "index.html#add-a-submodule",
+    "title": "relate1Kgenomes",
+    "section": "Add a submodule",
+    "text": "Add a submodule\nNow, say you have a project repo called “umbrella” that will contain other projects and that you have cloned that:\ngit clone git@github.com:kaspermunch/umbrella.git\nYou want to use an rfmix pipeline in your project. So you clone this repository as submodule:\n\n\nTerminal\n\ngit submodule add git@github.com:munch-group/rfmix.git\n\nand pull the current state of the submodule repo:\n\n\nTerminal\n\ngit submodule init rfmix\ngit submodule update rfmix\n\nThis also generates a .gitmodules configuration file that git uses to keep track of submodules. Commit that the addalong with the submodule:\n\n\nTerminal\n\ngit add .gitmodules rfmix\ngit commit -m 'Added rfmix as submodule'\ngit push\n\nIf you want to work on/change submodule repo you need to check out a branch to work on (main or some other). Always do this. If you decide to make changes later and forgot you did not check out a branch you could loose those changes:\n\n\nTerminal\n\ncd rfmix\ngit checkout main  # (or some other branch)",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#making-changes-to-the-submodule",
+    "href": "index.html#making-changes-to-the-submodule",
+    "title": "relate1Kgenomes",
+    "section": "Making changes to the submodule",
+    "text": "Making changes to the submodule\nnow you can then do some work on the tester repo (E.g. change the README.md) and add, commit as usual:\n\n\nTerminal\n\ncd rfmix\n# change README.md\ngit add README.md\ngit commit",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#publishing-submodule-changes-to-github",
+    "href": "index.html#publishing-submodule-changes-to-github",
+    "title": "relate1Kgenomes",
+    "section": "Publishing submodule changes to GitHub",
+    "text": "Publishing submodule changes to GitHub\nTo publish your submodule commit to the tester repo on GitHub you run:\n\n\nTerminal\n\ncd rfmix\ngit push",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#getting-submodule-changes-from-github",
+    "href": "index.html#getting-submodule-changes-from-github",
+    "title": "relate1Kgenomes",
+    "section": "Getting submodule changes from GitHub",
+    "text": "Getting submodule changes from GitHub\nif you run “git pull” in the umbrella repo, you pull upstream changes to the umbrella repo including the recorded state (commit) of the tester submodule:\n\n\nTerminal\n\ngit pull\n\nbut it does not pull the tester submodule itself. To do that you run pull in the submodule:\n\n\nTerminal\n\ncd rfmix\ngit pull",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#multiple-submodules",
+    "href": "index.html#multiple-submodules",
+    "title": "relate1Kgenomes",
+    "section": "Multiple submodules",
+    "text": "Multiple submodules\nYou can have as many submodules as you want. With more submodules, each update command updates all submodules.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "manuscript/index.html",
+    "href": "manuscript/index.html",
+    "title": "Title of my thesis",
+    "section": "",
+    "text": "Abstract\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "crumbs": [
+      "Manuscript",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Title of my thesis</span>"
+    ]
+  },
+  {
+    "objectID": "manuscript/index.html#subsection-with-text-from-notebook",
+    "href": "manuscript/index.html#subsection-with-text-from-notebook",
+    "title": "Title of my thesis",
+    "section": "Subsection (with text from notebook)",
+    "text": "Subsection (with text from notebook)\n\n\n\nThe 24 subjects from workplaces in Denmark were interviewed …. blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah\n\n\n\nEuismod lectus ultrices; duis duis ipsum rhoncus. Ipsum vitae primis potenti suscipit per nascetur rutrum lobortis. Suspendisse et maximus elit. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet vestibulum eleifend. Phasellus elementum sagittis molestie. Proin tempor lorem arcu, at condimentum purus volutpat eu.",
+    "crumbs": [
+      "Manuscript",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Title of my thesis</span>"
+    ]
+  },
+  {
+    "objectID": "manuscript/index.html#subsection-with-embedded-table-from-notebook",
+    "href": "manuscript/index.html#subsection-with-embedded-table-from-notebook",
+    "title": "Title of my thesis",
+    "section": "Subsection (with embedded table from notebook)",
+    "text": "Subsection (with embedded table from notebook)\nThese were selected to represent as many nationalities as possible (Table 6.1). Proin feugiat leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris cursus laoreet ex, ignissim bibendum est posuere iaculis. Suspendisse et maximus elit. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam.\n\n\n\n\n\nTable 4.1: People included in the analysis.\n\n\n\n\n\n\n\n\nname\nage\nsex\nposition\nnationality\n\n\n\n\nJulie\n27\nF\nPhDstudent\nDK\n\n\nThomas\n33\nM\nPostdoc\nGB\n\n\nEmilie\n23\nF\nPhDstudent\nCH\n\n\nSofie\n31\nF\nPostdoc\nDK\n\n\nSara\n29\nF\nPostdoc\nUS\n\n\nCecilie\n34\nF\nPostdoc\nDK\n\n\nAnders\n32\nM\nPhDstudent\nUK\n\n\nEmma\n42\nF\nProfessor\nDK\n\n\nCaroline\n31\nF\nPhDstudent\nDK\n\n\nLaura\n30\nF\nPostdoc\nDK\n\n\nMikkel\n33\nM\nPostdoc\nNL\n\n\nJens\n27\nM\nPhDstudent\nDK\n\n\nAndreas\n29\nM\nPhDstudent\nDK\n\n\nJakob\n28\nM\nPhDstudent\nDK\n\n\nMathilde\n61\nF\nProfessor\nDK\n\n\nKatrine\n35\nF\nPostdoc\nDK\n\n\nPoul\n30\nM\nPostdoc\nDK\n\n\nAnna\n26\nF\nPhDstudent\nDK\n\n\nPeter\n42\nM\nProfessor\nGB\n\n\nIda\n53\nF\nPostdoc\nDK\n\n\nFreja\n30\nF\nPostdoc\nDK\n\n\nMaria\n39\nF\nProfessor\nUK\n\n\nAmalie\n29\nF\nPhDstudent\nDK\n\n\nCamilla\n35\nF\nPostdoc\nDK\n\n\n\n\n\n\n\n\n\nAenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet vestibulum eleifend. Phasellus elementum sagittis molestie. Proin tempor lorem arcu, at condimentum purus volutpat eu. Fusce et ellentesque ligula. Pellentesque id tellus at erat luctus fringilla. Suspendisse potenti.",
+    "crumbs": [
+      "Manuscript",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Title of my thesis</span>"
+    ]
+  },
+  {
+    "objectID": "manuscript/index.html#subsection-with-math",
+    "href": "manuscript/index.html#subsection-with-math",
+    "title": "Title of my thesis",
+    "section": "Subsection (with math)",
+    "text": "Subsection (with math)\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. This is calculated as \\(\\pi_k = \\prod_{i=1}^K x_i\\). Phasellus elementum sagittis molestie. Proin tempor lorem arcu, at condimentum purus volutpat eu. Fusce et ellentesque ligula. Pellentesque id tellus at erat luctus fringilla. Suspendisse potenti as shown in (Equation 5.1).\n\\[\n\\lambda = \\sum_{k=1}^N \\pi_k\n\\tag{4.1}\\]\nAs shown in Equation 5.2, ac dignissim magna. Vestibulum vitae egestas elit. Proin feugiat leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris cursus laoreet ex, ignissim bibendum est posuere iaculis. Suspendisse et maximus elit.\n\\[\ny \\sim \\beta_1 x + \\beta_2\n\\tag{4.2}\\]",
+    "crumbs": [
+      "Manuscript",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Title of my thesis</span>"
+    ]
+  },
+  {
+    "objectID": "manuscript/index.html#subsection-with-code",
+    "href": "manuscript/index.html#subsection-with-code",
+    "title": "Title of my thesis",
+    "section": "Subsection (with code)",
+    "text": "Subsection (with code)\n\n# this code is executed but not shown in the output\nx = 5\n\nPulvinar tempus nascetur sollicitudin fringilla sodales. The value of x is 5. Sapien ullamcorper pretium tellus ultricies sodales aliquet. Proin eros iaculis fames mus cubilia praesent cubilia. Nulla quam montes sed varius nullam non. Mi turpis sagittis ornare condimentum consectetur. In Python, we can define a variable like this:\ny = 4\n\nSubsection (bold and italics)\nThis is bold, so is this. This is italics, so is this. This is both, so is this. Pulvinar tempus nascetur sollicitudin fringilla sodales. Urna lorem nisi volutpat; lobortis dapibus auctor mollis. Suscipit conubia neque cras curae vitae curabitur facilisi inceptos ante. Vehicula volutpat nulla nostra inceptos parturient dui purus ipsum ante.\n\n\nSubsubsection\nPulvinar tempus nascetur sollicitudin fringilla sodales. Urna lorem nisi volutpat; lobortis dapibus auctor mollis. Suscipit conubia neque cras curae vitae curabitur facilisi inceptos ante. Phasellus augue inceptos nulla; amet id egestas ad. Enim ad eget nullam fames blandit neque varius mi. Velit pretium est conubia montes gravida. Vehicula volutpat nulla nostra inceptos parturient dui purus ipsum ante.",
+    "crumbs": [
+      "Manuscript",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Title of my thesis</span>"
+    ]
+  },
+  {
+    "objectID": "manuscript/index.html#section-with-embedded-figures-from-notebooks",
+    "href": "manuscript/index.html#section-with-embedded-figures-from-notebooks",
+    "title": "Title of my thesis",
+    "section": "Section (with embedded figures from notebooks)",
+    "text": "Section (with embedded figures from notebooks)\nPretium id vestibulum tristique ornare cras. Litora odio mus nullam molestie himenaeos neque lacus bibendum penatibus. Velit porttitor eget massa hac massa feugiat netus ac. Sodales scelerisque imperdiet curae luctus iaculis est vehicula elementum. (Figure 6.4).\n\n\n\n\n\n\n\n\n\nFigure 5.1: Figure legends are defined alongside the figure in the notebook. The figure size in the notebook is determines its size when embedded in a document 4x3 inches.\n\n\n\n\n\n\nAs shown in Figure 6.6, feugiat leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris cursus laoreet ex, ignissim bibendum est posuere iaculis. Suspendisse et maximus elit. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet vestibulum eleifend.\n\n\n\n\n\n\n\n\n\nFigure 5.2: Figure legends are defined alongside the figure in the notebook. The figure size in the notebook is determines its size when embedded in a document 4x3 inches.",
+    "crumbs": [
+      "Manuscript",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Title of my thesis</span>"
+    ]
+  },
+  {
+    "objectID": "manuscript/index.html#section-with-table-embedded-from-notebook",
+    "href": "manuscript/index.html#section-with-table-embedded-from-notebook",
+    "title": "Title of my thesis",
+    "section": "Section (with table embedded from notebook)",
+    "text": "Section (with table embedded from notebook)\nCubilia hendrerit ipsum suspendisse curae curae suspendisse scelerisque semper luctus. Erat turpis dictum bibendum taciti pharetra. Nisi sed vestibulum felis duis; dapibus id. Justo semper felis potenti commodo class. Mauris venenatis purus integer urna cras faucibus. Eu consequat varius massa porttitor nisi. Est fringilla sed senectus ante fames ipsum aenean porta neque, Table 4.2 lists the mean interaction scores by position and nationality.\n\n\n\n\n\nTable 5.1: Mean interaction scores by position and nationality.\n\n\n\n\n\n\n\n\n\n\nposition\nnationality\ninformality\n\n\n\n\n2\nPhDstudent\nUK\n8.047080\n\n\n4\nPostdoc\nGB\n8.348845\n\n\n5\nPostdoc\nNL\n8.440463\n\n\n0\nPhDstudent\nCH\n9.860340\n\n\n1\nPhDstudent\nDK\n9.937346\n\n\n8\nProfessor\nGB\n9.946008\n\n\n3\nPostdoc\nDK\n10.140271\n\n\n7\nProfessor\nDK\n10.366510\n\n\n9\nProfessor\nUK\n10.748114\n\n\n6\nPostdoc\nUS\n10.770385\n\n\n\n\n\n\n\n\n\n\n\nLigula molestie convallis magnis elit tellus volutpat. Hac id in libero nibh inceptos. Malesuada blandit porttitor ad; netus integer tortor. Quis venenatis lorem sit ex hendrerit porta in. Purus praesent felis eget class luctus condimentum finibus quis tincidunt. Nam lectus malesuada primis dapibus consectetur. Quam placerat nam ullamcorper fusce conubia fermentum himenaeos gravida nostra.\n\nDiscussion\nSociosqu iaculis molestie consectetur; pulvinar imperdiet pellentesque sollicitudin erat. Varius mattis neque blandit sodales mauris vestibulum. Iaculis sodales euismod neque risus nostra magna fermentum eleifend. Tempus consequat montes nec quisque urna quam non montes. Accumsan ligula mauris nullam nascetur maximus sodales. Non tellus vel aliquam aenean nulla turpis curabitur potenti. Eleifend luctus mi primis elementum, rhoncus quisque. Aenean semper blandit cursus sapien; eget sem. Posuere ultricies torquent tellus ridiculus enim placerat malesuada tempus.\nSapien ullamcorper pretium tellus ultricies sodales aliquet. Proin eros iaculis fames mus cubilia praesent cubilia. Nulla quam montes sed varius nullam non. Mi turpis sagittis ornare condimentum consectetur. Aenean orci sagittis nibh venenatis natoque bibendum semper vel. Interdum per velit lacus ridiculus augue convallis mollis. Faucibus eget eros aptent; fusce magnis lacinia duis. Justo ad fames laoreet nisl viverra.\n\n\nConclusion\nLaoreet ullamcorper urna et amet nunc faucibus finibus. Eget consequat sed integer bibendum a mollis nisl luctus. Orci leo quisque inceptos imperdiet proin. Pellentesque commodo parturient maecenas eu leo malesuada ullamcorper nulla viverra. Arcu ligula imperdiet quisque finibus in curae et accumsan. Egestas gravida sollicitudin venenatis pellentesque litora leo.\nCras velit donec in a morbi ligula, ultrices at tempor. Auctor lectus in aptent suscipit congue. Urna dui metus risus eleifend odio nisl magna. Nascetur fringilla metus proin vitae in diam. Class tincidunt lorem et dictum quisque arcu euismod. Adipiscing dui interdum aptent fusce pretium pretium. Efficitur imperdiet sem dictumst ultrices id rhoncus. Congue lacus efficitur scelerisque nibh vestibulum.",
+    "crumbs": [
+      "Manuscript",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Title of my thesis</span>"
+    ]
+  },
+  {
+    "objectID": "thesis/index.html",
+    "href": "thesis/index.html",
+    "title": "Title of my thesis",
+    "section": "",
+    "text": "Abstract\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "crumbs": [
+      "Thesis",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Title of my thesis</span>"
+    ]
+  },
+  {
+    "objectID": "thesis/index.html#subsection-with-text-from-notebook",
+    "href": "thesis/index.html#subsection-with-text-from-notebook",
+    "title": "Title of my thesis",
+    "section": "Subsection (with text from notebook)",
+    "text": "Subsection (with text from notebook)\n\n\n\nThe 24 subjects from workplaces in Denmark were interviewed …. blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah\n\n\n\nEuismod lectus ultrices; duis duis ipsum rhoncus. Ipsum vitae primis potenti suscipit per nascetur rutrum lobortis. Suspendisse et maximus elit. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet vestibulum eleifend. Phasellus elementum sagittis molestie. Proin tempor lorem arcu, at condimentum purus volutpat eu.",
+    "crumbs": [
+      "Thesis",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Title of my thesis</span>"
+    ]
+  },
+  {
+    "objectID": "thesis/index.html#subsection-with-inline-table",
+    "href": "thesis/index.html#subsection-with-inline-table",
+    "title": "Title of my thesis",
+    "section": "Subsection (with inline table)",
+    "text": "Subsection (with inline table)\nThe table below does not have analysis data but is used to tabulate something that could also be said with prose (Table 5.1). Proin feugiat leo quis ante condimentum, eu ornare mauris feugiatque eu arcu blandit fringilla et in quam.\n\n\n\nTable 5.1: Four categories of RNA with some summary info.\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntRNA\nA type of RNA that blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah\n\n\nmRNA\nA type of RNA that blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah\n\n\npiRNA\nA type of RNA that blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah\n\n\nsnoRNA\nA type of RNA that blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah",
+    "crumbs": [
+      "Thesis",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Title of my thesis</span>"
+    ]
+  },
+  {
+    "objectID": "thesis/index.html#subsection-with-math",
+    "href": "thesis/index.html#subsection-with-math",
+    "title": "Title of my thesis",
+    "section": "Subsection (with math)",
+    "text": "Subsection (with math)\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. This is calculated as \\(\\pi_k = \\prod_{i=1}^K x_i\\). Phasellus elementum sagittis molestie. Proin tempor lorem arcu, at condimentum purus volutpat eu. Fusce et ellentesque ligula. Pellentesque id tellus at erat luctus fringilla. Suspendisse potenti as shown in (Equation 5.1).\n\\[\n\\lambda = \\sum_{k=1}^N \\pi_k\n\\tag{5.1}\\]\nAs shown in Equation 5.2, ac dignissim magna. Vestibulum vitae egestas elit. Proin feugiat leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris cursus laoreet ex, ignissim bibendum est posuere iaculis. Suspendisse et maximus elit.\n\\[\ny \\sim \\beta_1 x + \\beta_2\n\\tag{5.2}\\]",
+    "crumbs": [
+      "Thesis",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Title of my thesis</span>"
+    ]
+  },
+  {
+    "objectID": "thesis/index.html#subsection-with-code",
+    "href": "thesis/index.html#subsection-with-code",
+    "title": "Title of my thesis",
+    "section": "Subsection (with code)",
+    "text": "Subsection (with code)\n\n# this code is executed but not shown in the output\nx = 5\n\nPulvinar tempus nascetur sollicitudin fringilla sodales. The value of x is 5. Sapien ullamcorper pretium tellus ultricies sodales aliquet. Proin eros iaculis fames mus cubilia praesent cubilia. Nulla quam montes sed varius nullam non. Mi turpis sagittis ornare condimentum consectetur. In Python, we can define a variable like this:\ny = 4",
+    "crumbs": [
+      "Thesis",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Title of my thesis</span>"
+    ]
+  },
+  {
+    "objectID": "thesis/index.html#subsection-bold-and-italics",
+    "href": "thesis/index.html#subsection-bold-and-italics",
+    "title": "Title of my thesis",
+    "section": "Subsection (bold and italics)",
+    "text": "Subsection (bold and italics)\nThis is bold, so is this. This is italics, so is this. This is both, so is this. Pulvinar tempus nascetur sollicitudin fringilla sodales. Urna lorem nisi volutpat; lobortis dapibus auctor mollis. Suscipit conubia neque cras curae vitae curabitur facilisi inceptos ante. Vehicula volutpat nulla nostra inceptos parturient dui purus ipsum ante.\n\nSubsubsection\nPulvinar tempus nascetur sollicitudin fringilla sodales. Urna lorem nisi volutpat; lobortis dapibus auctor mollis. Suscipit conubia neque cras curae vitae curabitur facilisi inceptos ante. Phasellus augue inceptos nulla; amet id egestas ad. Enim ad eget nullam fames blandit neque varius mi. Velit pretium est conubia montes gravida. Vehicula volutpat nulla nostra inceptos parturient dui purus ipsum ante.\n\nSubsubsubsection\nPulvinar tempus nascetur sollicitudin fringilla sodales. Urna lorem nisi volutpat; lobortis dapibus auctor mollis. Suscipit conubia neque cras curae vitae curabitur facilisi inceptos ante. Phasellus augue inceptos nulla; amet id egestas ad. Enim ad eget nullam fames blandit neque varius mi. Velit pretium est conubia montes gravida. Vehicula volutpat nulla nostra inceptos parturient dui purus ipsum ante.",
+    "crumbs": [
+      "Thesis",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Title of my thesis</span>"
+    ]
+  },
+  {
+    "objectID": "thesis/index.html#section-with-embedded-figures-from-notebooks",
+    "href": "thesis/index.html#section-with-embedded-figures-from-notebooks",
+    "title": "Title of my thesis",
+    "section": "Section (with embedded figures from notebooks)",
+    "text": "Section (with embedded figures from notebooks)\nPretium id vestibulum tristique ornare cras. Litora odio mus nullam molestie himenaeos neque lacus bibendum penatibus. Velit porttitor eget massa hac massa feugiat netus ac. Sodales scelerisque imperdiet curae luctus iaculis est vehicula elementum. (Figure 6.4).\n\n\n\n\n\n\n\n\n\nFigure 6.1: Figure legends are defined alongside the figure in the notebook. The figure size in the notebook is determines its size when embedded in a document 4x3 inches.\n\n\n\n\n\n\nAs shown in Figure 6.6, feugiat leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris cursus laoreet ex, ignissim bibendum est posuere iaculis. Suspendisse et maximus elit. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet vestibulum eleifend.\n\n\n\n\n\n\n\n\n\nFigure 6.2: Figure legends are defined alongside the figure in the notebook. The figure size in the notebook is determines its size when embedded in a document 4x3 inches.",
+    "crumbs": [
+      "Thesis",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Title of my thesis</span>"
+    ]
+  },
+  {
+    "objectID": "thesis/index.html#section-with-table-embedded-from-notebook",
+    "href": "thesis/index.html#section-with-table-embedded-from-notebook",
+    "title": "Title of my thesis",
+    "section": "Section (with table embedded from notebook)",
+    "text": "Section (with table embedded from notebook)\nCubilia hendrerit ipsum suspendisse curae curae suspendisse scelerisque semper luctus. Erat turpis dictum bibendum taciti pharetra. Nisi sed vestibulum felis duis; dapibus id. Justo semper felis potenti commodo class. Mauris venenatis purus integer urna cras faucibus. Eu consequat varius massa porttitor nisi. Est fringilla sed senectus ante fames ipsum aenean porta neque, Table 4.2 lists the mean interaction scores by position and nationality.\n\n\n\n\n\nTable 6.1: Mean interaction scores by position and nationality.\n\n\n\n\n\n\n\n\n\n\nposition\nnationality\ninformality\n\n\n\n\n2\nPhDstudent\nUK\n8.047080\n\n\n4\nPostdoc\nGB\n8.348845\n\n\n5\nPostdoc\nNL\n8.440463\n\n\n0\nPhDstudent\nCH\n9.860340\n\n\n1\nPhDstudent\nDK\n9.937346\n\n\n8\nProfessor\nGB\n9.946008\n\n\n3\nPostdoc\nDK\n10.140271\n\n\n7\nProfessor\nDK\n10.366510\n\n\n9\nProfessor\nUK\n10.748114\n\n\n6\nPostdoc\nUS\n10.770385\n\n\n\n\n\n\n\n\n\n\n\nLigula molestie convallis magnis elit tellus volutpat. Hac id in libero nibh inceptos. Malesuada blandit porttitor ad; netus integer tortor. Quis venenatis lorem sit ex hendrerit porta in. Purus praesent felis eget class luctus condimentum finibus quis tincidunt. Nam lectus malesuada primis dapibus consectetur. Quam placerat nam ullamcorper fusce conubia fermentum himenaeos gravida nostra.",
+    "crumbs": [
+      "Thesis",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Title of my thesis</span>"
+    ]
+  },
+  {
+    "objectID": "slides/index.html",
+    "href": "slides/index.html",
+    "title": "Example",
+    "section": "",
+    "text": "Admixture displacement in each geographical region",
+    "crumbs": [
+      "Slides",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Example</span>"
+    ]
+  },
+  {
+    "objectID": "slides/index.html#admixture-displacement-in-each-geographical-region",
+    "href": "slides/index.html#admixture-displacement-in-each-geographical-region",
+    "title": "Example",
+    "section": "",
+    "text": "This is a subtitle\nHere we have some text that may run over several lines of the slide frame, depending on how long it is.\n\nfirst item\n\nA sub item\n\n\nNext, we’ll brief review some theme-specific components.\n\nNote that all of the standard Reveal.js features can be used with this theme, even if we don’t highlight them here.",
+    "crumbs": [
+      "Slides",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Example</span>"
+    ]
+  },
+  {
+    "objectID": "slides/index.html#additional-theme-classes",
+    "href": "slides/index.html#additional-theme-classes",
+    "title": "Example",
+    "section": "Additional theme classes",
+    "text": "Additional theme classes\n\nSome extra things you can do with the clean theme\nSpecial classes for emphasis\n\n.alert class for default emphasis, e.g. important note.\n.fg class for custom colour, e.g. important note.\n.bg class for custom background, e.g. important note.\n\nCross-references\n\n.button class provides a Beamer-like button, e.g. Summary",
+    "crumbs": [
+      "Slides",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Example</span>"
+    ]
+  },
+  {
+    "objectID": "slides/index.html#social-norms",
+    "href": "slides/index.html#social-norms",
+    "title": "Example",
+    "section": "Social norms",
+    "text": "Social norms\n\nSampling\nWe used a sample size of 24.\nIn Denmark, the workplace interaction is very informal and largely unaffected by seniority and age.\n\n\n\nThe 24 subjects from workplaces in Denmark were interviewed …. blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah",
+    "crumbs": [
+      "Slides",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Example</span>"
+    ]
+  },
+  {
+    "objectID": "slides/index.html#social-norms-1",
+    "href": "slides/index.html#social-norms-1",
+    "title": "Example",
+    "section": "Social norms",
+    "text": "Social norms\n\nNeither academic seniority or age affected interaction\n\n\n\n\n\n\n\n\n\nFigure 3.1: Figure legends are defined alongside the figure in the notebook. The figure size in the notebook is determines its size when embedded in a document 4x3 inches.\n\n\n\n\n\n\n\n\n\n\nThe correlation between informality and age was -0.163.",
+    "crumbs": [
+      "Slides",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Example</span>"
+    ]
+  },
+  {
+    "objectID": "slides/index.html#slide-title",
+    "href": "slides/index.html#slide-title",
+    "title": "Example",
+    "section": "Slide title",
+    "text": "Slide title\n\n\nEat spaghetti\nDrink wine",
+    "crumbs": [
+      "Slides",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Example</span>"
+    ]
+  },
+  {
+    "objectID": "slides/index.html#slide-title-1",
+    "href": "slides/index.html#slide-title-1",
+    "title": "Example",
+    "section": "Slide title",
+    "text": "Slide title\n\n\nLeft column\n\n\nOne\nTwo\nThree",
+    "crumbs": [
+      "Slides",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Example</span>"
+    ]
+  },
+  {
+    "objectID": "slides/index.html#admixture-displacement-in-each-geographical-region-1",
+    "href": "slides/index.html#admixture-displacement-in-each-geographical-region-1",
+    "title": "Example",
+    "section": "Admixture displacement in each geographical region",
+    "text": "Admixture displacement in each geographical region\n\n\n\n\n\nThe correlation between informality and age was -0.163.\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 3.2: Figure legends are defined alongside the figure in the notebook. The figure size in the notebook is determines its size when embedded in a document 4x3 inches.",
+    "crumbs": [
+      "Slides",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Example</span>"
+    ]
+  },
+  {
+    "objectID": "slides/index.html#slide-title-2",
+    "href": "slides/index.html#slide-title-2",
+    "title": "Example",
+    "section": "Slide Title",
+    "text": "Slide Title\nSlide content\n\n\n\n\nSchumer et al. (2018)",
+    "crumbs": [
+      "Slides",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Example</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/example.html",
+    "href": "notebooks/example.html",
+    "title": "Workplace interaction",
+    "section": "",
+    "text": "Sampling\nImport some plotting libraries and set some defaults:\nsubjects = pd.read_csv('../data/data_table.csv')\nassert subjects.index.size == params.sample_size\nsubjects\n\n\n\n\n\n\n\n\nname\nage\nsex\nposition\nnationality\n\n\n\n\n0\nJulie\n27\nF\nPhDstudent\nDK\n\n\n1\nThomas\n33\nM\nPostdoc\nGB\n\n\n2\nEmilie\n23\nF\nPhDstudent\nCH\n\n\n3\nSofie\n31\nF\nPostdoc\nDK\n\n\n4\nSara\n29\nF\nPostdoc\nUS\n\n\n5\nCecilie\n34\nF\nPostdoc\nDK\n\n\n6\nAnders\n32\nM\nPhDstudent\nUK\n\n\n7\nEmma\n42\nF\nProfessor\nDK\n\n\n8\nCaroline\n31\nF\nPhDstudent\nDK\n\n\n9\nLaura\n30\nF\nPostdoc\nDK\n\n\n10\nMikkel\n33\nM\nPostdoc\nNL\n\n\n11\nJens\n27\nM\nPhDstudent\nDK\n\n\n12\nAndreas\n29\nM\nPhDstudent\nDK\n\n\n13\nJakob\n28\nM\nPhDstudent\nDK\n\n\n14\nMathilde\n61\nF\nProfessor\nDK\n\n\n15\nKatrine\n35\nF\nPostdoc\nDK\n\n\n16\nPoul\n30\nM\nPostdoc\nDK\n\n\n17\nAnna\n26\nF\nPhDstudent\nDK\n\n\n18\nPeter\n42\nM\nProfessor\nGB\n\n\n19\nIda\n53\nF\nPostdoc\nDK\n\n\n20\nFreja\n30\nF\nPostdoc\nDK\n\n\n21\nMaria\n39\nF\nProfessor\nUK\n\n\n22\nAmalie\n29\nF\nPhDstudent\nDK\n\n\n23\nCamilla\n35\nF\nPostdoc\nDK\n# with pd.option_context('display.max_rows', None,): # prints *all* rows\n#     display(subjects.style.hide()) # .style.hide() hides the index)\nsubjects.style.hide()\n\n\n\nTable 4.1: People included in the analysis.\n\n\n\n\n\n\n\n\nname\nage\nsex\nposition\nnationality\n\n\n\n\nJulie\n27\nF\nPhDstudent\nDK\n\n\nThomas\n33\nM\nPostdoc\nGB\n\n\nEmilie\n23\nF\nPhDstudent\nCH\n\n\nSofie\n31\nF\nPostdoc\nDK\n\n\nSara\n29\nF\nPostdoc\nUS\n\n\nCecilie\n34\nF\nPostdoc\nDK\n\n\nAnders\n32\nM\nPhDstudent\nUK\n\n\nEmma\n42\nF\nProfessor\nDK\n\n\nCaroline\n31\nF\nPhDstudent\nDK\n\n\nLaura\n30\nF\nPostdoc\nDK\n\n\nMikkel\n33\nM\nPostdoc\nNL\n\n\nJens\n27\nM\nPhDstudent\nDK\n\n\nAndreas\n29\nM\nPhDstudent\nDK\n\n\nJakob\n28\nM\nPhDstudent\nDK\n\n\nMathilde\n61\nF\nProfessor\nDK\n\n\nKatrine\n35\nF\nPostdoc\nDK\n\n\nPoul\n30\nM\nPostdoc\nDK\n\n\nAnna\n26\nF\nPhDstudent\nDK\n\n\nPeter\n42\nM\nProfessor\nGB\n\n\nIda\n53\nF\nPostdoc\nDK\n\n\nFreja\n30\nF\nPostdoc\nDK\n\n\nMaria\n39\nF\nProfessor\nUK\n\n\nAmalie\n29\nF\nPhDstudent\nDK\n\n\nCamilla\n35\nF\nPostdoc\nDK\nThe 24 subjects from workplaces in Denmark were interviewed …. blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah",
+    "crumbs": [
+      "Notebooks",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Workplace interaction</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/example.html#sampling",
+    "href": "notebooks/example.html#sampling",
+    "title": "Workplace interaction",
+    "section": "",
+    "text": "Tip:\nBy adding a label and caption to a cell displaying a table, you can refer to that table elsewhere and insert it in a manuscript.\n\n\n\nTip:\nBy generaing markdown for descriptions that will eventually end up in the manuscript, you can imbed python values. It also ensures that the manuscript exactly reflects the notebook.",
+    "crumbs": [
+      "Notebooks",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Workplace interaction</span>"
+    ]
+  },
+  {
+    "objectID": "notebooks/example.html#interviews",
+    "href": "notebooks/example.html#interviews",
+    "title": "Workplace interaction",
+    "section": "Interviews",
+    "text": "Interviews\nIn interviewed {python} params.sample_size workplace individuals were interviewed by …. blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah,\n\n# generate some random sample data\nscores = pd.DataFrame({\n    'name': subjects.name, \n    'informality': np.random.normal(loc=10, scale=1, size=params.sample_size)\n})\ndata = pd.merge(subjects, scores, on='name')\ndata\n\n\n\n\n\n\n\n\nname\nage\nsex\nposition\nnationality\ninformality\n\n\n\n\n0\nJulie\n27\nF\nPhDstudent\nDK\n9.089594\n\n\n1\nThomas\n33\nM\nPostdoc\nGB\n8.348845\n\n\n2\nEmilie\n23\nF\nPhDstudent\nCH\n9.860340\n\n\n3\nSofie\n31\nF\nPostdoc\nDK\n9.236473\n\n\n4\nSara\n29\nF\nPostdoc\nUS\n10.770385\n\n\n5\nCecilie\n34\nF\nPostdoc\nDK\n10.257653\n\n\n6\nAnders\n32\nM\nPhDstudent\nUK\n8.047080\n\n\n7\nEmma\n42\nF\nProfessor\nDK\n11.498945\n\n\n8\nCaroline\n31\nF\nPhDstudent\nDK\n11.498402\n\n\n9\nLaura\n30\nF\nPostdoc\nDK\n9.067757\n\n\n10\nMikkel\n33\nM\nPostdoc\nNL\n8.440463\n\n\n11\nJens\n27\nM\nPhDstudent\nDK\n10.007813\n\n\n12\nAndreas\n29\nM\nPhDstudent\nDK\n9.779177\n\n\n13\nJakob\n28\nM\nPhDstudent\nDK\n8.666128\n\n\n14\nMathilde\n61\nF\nProfessor\nDK\n9.234076\n\n\n15\nKatrine\n35\nF\nPostdoc\nDK\n10.215683\n\n\n16\nPoul\n30\nM\nPostdoc\nDK\n9.251555\n\n\n17\nAnna\n26\nF\nPhDstudent\nDK\n11.388422\n\n\n18\nPeter\n42\nM\nProfessor\nGB\n9.946008\n\n\n19\nIda\n53\nF\nPostdoc\nDK\n10.150439\n\n\n20\nFreja\n30\nF\nPostdoc\nDK\n11.432069\n\n\n21\nMaria\n39\nF\nProfessor\nUK\n10.748114\n\n\n22\nAmalie\n29\nF\nPhDstudent\nDK\n9.131887\n\n\n23\nCamilla\n35\nF\nPostdoc\nDK\n11.510536\n\n\n\n\n\n\n\n\nplt.figure(figsize=(4,3))\nsns.scatterplot(x='age', y='informality', data=data, hue='position', palette='viridis')\nplt.ylabel('How informal you can be')\nplt.xlabel('Age')\nplt.legend(title='Seniority', loc='lower right')\nplt.ylim(bottom=0) ;\n\n\n\n\n\n\n\nFigure 4.1: Figure legends are defined alongside the figure in the notebook. The figure size in the notebook is determines its size when embedded in a document 4x3 inches.\n\n\n\n\n\nor plotted differently:\n\n#plt.figure(figsize=(4,3))\ng = sns.FacetGrid(data=data, col=\"nationality\",hue=\"position\", palette='viridis', aspect=0.9)\ng.map(sns.scatterplot, 'age', 'informality')\n#sns.scatterplot(x='age', y='informality', data=data, hue='position', palette='viridis')\nplt.ylabel('How informal you can be')\nplt.xlabel('Age')\nplt.legend(title='Seniority', loc='lower right') ;\n\n\n\n\n\n\n\nFigure 4.2: Figure legends are defined alongside the figure in the notebook. The figure size in the notebook is determines its size when embedded in a document 4x3 inches.\n\n\n\n\n\nSeems Danish people act very informally unaffected by age and seniority.\n\ninformality_age_cor = data.informality.corr(data.age)\ninformality_age_cor\n\n0.0502201862207874\n\n\n\nmean_informality = data.groupby(['position', 'nationality']).informality.mean().to_frame().reset_index()\nmean_informality = mean_informality.sort_values('informality')#.style.hide() # hide index\n\nTo show the mean_informality table, in a way that allow you to cite and embed it elsewhere, you need to provide a label, and preferably a caption, for it, as shown below. For this use, you also need to use the display function:\n\ndisplay(mean_informality)\n\n\n\nTable 4.2: Mean interaction scores by position and nationality.\n\n\n\n\n\n\n\n\n\n\nposition\nnationality\ninformality\n\n\n\n\n2\nPhDstudent\nUK\n8.047080\n\n\n4\nPostdoc\nGB\n8.348845\n\n\n5\nPostdoc\nNL\n8.440463\n\n\n0\nPhDstudent\nCH\n9.860340\n\n\n1\nPhDstudent\nDK\n9.937346\n\n\n8\nProfessor\nGB\n9.946008\n\n\n3\nPostdoc\nDK\n10.140271\n\n\n7\nProfessor\nDK\n10.366510\n\n\n9\nProfessor\nUK\n10.748114\n\n\n6\nPostdoc\nUS\n10.770385\n\n\n\n\n\n\n\n\n\n\n\nTip: To render a nice table without the index column, you can do this to the display function instead: Markdown(df.to_markdown(index=False))\n\n\nThe table above shows the mean informality scores by\n\n\n\n\n\n\n\n\n\nFigure 4.3: Figure legends are defined alongside the figure in the notebook. The figure size in the notebook is determines its size when embedded in a document 4x3 inches.\n\n\n\n\n\n\n\nThe correlation between informality and age was -0.163.\n\n\n\nsns.lmplot(x='age', y='informality', data=data, hue='position', palette='viridis', height=3, aspect=4/3)\nplt.ylabel('How informal you can be')\nplt.xlabel('Age') ;\n\n\n\n\n\n\n\nFigure 4.4: Figure legends are defined alongside the figure in the notebook. The figure size in the notebook is determines its size when embedded in a document 4x3 inches.",
+    "crumbs": [
+      "Notebooks",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Workplace interaction</span>"
+    ]
+  },
+  {
+    "objectID": "workflow.html",
+    "href": "workflow.html",
+    "title": "GWF workflow",
+    "section": "",
+    "text": "import os\nos.environ['NUMEXPR_MAX_THREADS'] = '16'\n\nfrom gwf import Workflow\nimport re\nfrom collections import defaultdict\nfrom pathlib import Path\nimport pandas as pd\nfrom gwf import Workflow, AnonymousTarget\nfrom gwf.workflow import collect\nimport os, re\nfrom collections import defaultdict\n\n\n\ndef modify_path(p, parent=None, base=None, suffix=None):\n    \"\"\"\n    function that modifies file path\n    \"\"\"\n    par, name = os.path.split(p)\n    name_no_suffix, suf = os.path.splitext(name)\n    if type(suffix) is str:\n        suf = suffix\n    if parent is not None:\n        par = parent\n    if base is not None:\n        name_no_suffix = base\n\n    new_path = os.path.join(par, name_no_suffix + suf)\n    if type(suffix) is tuple:\n        assert len(suffix) == 2\n        new_path, nsubs = re.subn(r'{}$'.format(suffix[0]), suffix[1], new_path)\n        assert nsubs == 1, nsubs\n    return new_path\n\n\ndef combine(*args, only=None):\n    \"\"\"\n    function to combine 2 target outputs as an input\n    \"\"\"\n    assert all(len(args[0]) == len(args[i]) for i in range(len(args)))\n    combined = []\n    for j in range(len(args[0])):\n        output_group = {}\n        for i in range(len(args)):\n            if only:\n                output_group.update({k: v for k, v in args[j].items() if k in only})\n            else:\n                output_group.update(args[i][j])\n        combined.append(output_group)\n    return combined\n\n\ndef download_data(config):\n    inputs = []\n    outputs = {'ancestral_vcf': f\"steps/data/{os.path.basename(config['ancestral_vcf'])}\",\n               'sample_vcf': f\"steps/data/{os.path.basename(config['sample_vcf'])}\",\n               'sample_vcf_index': f\"steps/data/{os.path.basename(config['sample_vcf_index'])}\",\n               '1000G_2504_seq_index': f\"steps/data/{os.path.basename(config['1000G_2504_seq_index'])}\",\n               '1000G_698_seq_index': f\"steps/data/{os.path.basename(config['1000G_698_seq_index'])}\",\n               'mask': f\"steps/data/{os.path.basename(config['mask']).replace('.gz', '')}\", # remove gz suffix because it is unpacked\n               'ancestral_fa': 'steps/data/homo_sapiens_ancestor_GRCh38/homo_sapiens_ancestor_X.fa',\n    }\n    options = {'memory': '8g', 'walltime': '10:00:00'}\n    spec = f'''\n    mkdir -p steps/data\n    wget --directory-prefix steps/data {config['sample_vcf']}\n    wget --directory-prefix steps/data {config['sample_vcf_index']}\n    wget --directory-prefix steps/data {config['1000G_2504_seq_index']}\n    wget --directory-prefix steps/data {config['1000G_698_seq_index']}\n\n    wget --directory-prefix steps/data {config['mask']}\n    wget --directory-prefix steps/data {config['ancestral_vcf']}\n    cd steps/data/\n    gzip -d {os.path.basename(config['mask'])}\n    tar xfvz {os.path.basename(config['ancestral_vcf'])}\n    '''\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n\ndef decode_genetic_maps(decode_hg38_sexavg_per_gen, genetic_map_chrX):\n    \"\"\"\n    map of recombination rate across the X chromosome made by DECODE genetics\n    \"\"\"\n    inputs = [decode_hg38_sexavg_per_gen]\n    outputs = [genetic_map_chrX]\n    options = {'memory': '1g', 'walltime': '00:10:00'}\n    spec = f'''\n    mkdir -p {os.path.dirname(genetic_map_chrX)}\n    cat {decode_hg38_sexavg_per_gen} | tail -n +2 | grep chrX | cut -f 2,4,5 | (echo pos COMBINED_rate Genetic_Map ; cat - ; ) &gt; {genetic_map_chrX}\n    '''\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n\ndef female_haploid(chrX_filtered_eagle2_phased):\n    \"\"\"\n    turn diploid females (XX) into two individual haplotypes (haploid individuals) like males\n    \"\"\"\n    phased_haplotypes = 'steps/relate/haplotypes.vcf.gz'\n    inputs = [chrX_filtered_eagle2_phased]\n    outputs = {'haplotypes': phased_haplotypes}\n    options = {'memory': '10g', 'walltime': '01:20:00'}\n    spec = f'''\n    python scripts/haploid_vcf.py {chrX_filtered_eagle2_phased} | gzip &gt; {phased_haplotypes}\n    '''\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n\ndef haplotype_id(phased_haplotypes):\n    \"\"\"\n    construct files with haplotype IDs\n    \"\"\"\n    phased_haplotypes_id = 'steps/relate/haplotypes_ids.txt'\n    inputs = [phased_haplotypes]\n    outputs = {'ids': phased_haplotypes_id}\n    options = {'memory': '10g', 'walltime': '00:60:00'}\n    spec = f'''\n    # conda install -c bioconda bcftools\n    # conda install openssl   ## to install libcrypto.so.1.0.0 library\n    bcftools query -l {phased_haplotypes} &gt; {phased_haplotypes_id}\n    sleep 5\n    '''\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n\ndef all_pop_labels(phased_haplotypes_id, high_coverage_seq_index, related_high_coverage_seq_index):\n    \"\"\"\n    construct populations labels mapping each haplotype to a population\n    (group haplotypes according to the population to which the individuals carrying those haplotypes belong)\n    \"\"\"\n    phased_haplotypes_poplabels = 'steps/relate/poplabels.txt'\n    inputs = [phased_haplotypes_id, high_coverage_seq_index, related_high_coverage_seq_index]\n    outputs = {'poplabels': phased_haplotypes_poplabels}\n    options = {'memory': '10g', 'walltime': '00:60:00'}\n    spec = f'''\n    python scripts/make_poplabels.py {phased_haplotypes_id} {high_coverage_seq_index} {related_high_coverage_seq_index} &gt; {phased_haplotypes_poplabels} \n    '''\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n\ndef convert_vcf(phased_haplotypes, phased_haplotypes_poplabels):\n    \"\"\"\n    Define the function to convert VCF to haps/sample format\n    \"\"\"\n    phased_haplotypes_haps = modify_path(phased_haplotypes, suffix='.haps.gz')\n    phased_haplotypes_sample = modify_path(phased_haplotypes, suffix='.sample.gz')\n    inputs = [phased_haplotypes_poplabels, phased_haplotypes]\n    outputs = {'haps': phased_haplotypes_haps, 'sample': phased_haplotypes_sample}\n    options = {'memory': '10g', 'walltime': '01:00:00'}\n    spec = f'''\n    {config['relate_dist_dir']}/bin/RelateFileFormats --mode ConvertFromVcf --haps {phased_haplotypes_haps} --sample {phased_haplotypes_sample} -i {phased_haplotypes.replace('.vcf.gz', '')} --poplabels {phased_haplotypes_poplabels}\n    sleep 20\n    touch {phased_haplotypes_haps}\n    touch {phased_haplotypes_sample}\n    '''\n    # Returning outputs as well\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n\n## start with specific population ##\n\ndef exclude_related(path, population):\n    \"\"\"\n    exclude related individuals to avoid biases arising from shared genetic material\n    \"\"\"\n    output_dir = f'steps/relate/{population}/excluded'\n    output_path = modify_path(path, parent=output_dir, suffix='_related.txt')\n    inputs = {'path' : path}\n    outputs = {'path' : output_path}\n    options = {'memory': '10g', 'walltime': '00:60:00'}\n    spec = f'''\n    mkdir -p {output_dir}\n    grep -v '#' {path} | cut -f 10 &gt; {output_path}\n    '''\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n\ndef ids_other_ppl(path, population):\n    \"\"\"\n    find IDs of haplotypes from all other populations so we can exclude them\n    \"\"\"\n    output_dir = f'steps/relate/{population}/excluded'\n    output_path = modify_path(path, parent=output_dir, suffix='_non_ppl.txt')\n    inputs = {'path' : path}\n    outputs = {'path' : output_path}\n    options = {'memory': '10g', 'walltime': '00:60:00'}\n    spec = f'''\n    mkdir -p {output_dir}\n    grep -v {population} {path} | cut -f 1 -d ' ' &gt; {output_path}\n    '''\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n\ndef combine_files(path, population=None, related=None):\n    \"\"\"\n    combine excluded files: both related and non population individuals\n    \"\"\"\n    # output_dir = modify_path(output_path, base='', suffix='')\n    output_dir = f'steps/relate/{population}/combined'\n    output_path = modify_path(path, parent=output_dir, base='', suffix='excluded_combined.txt')\n    inputs = {'path': path, 'related': related}\n    outputs = {'path': output_path}\n    options = {'memory': '10g', 'walltime': '00:60:00'}\n    spec = f'''\n    mkdir -p {output_dir}\n    cat {path} {related} | sort | uniq &gt; {output_path}\n    '''\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n\ndef excluded_list(path, population=None, haplotype_id=None):\n    \"\"\"\n    construct a list of excluded individuals\n    \"\"\"\n    # output_dir = modify_path(output_path, base='', suffix='')\n    output_dir = f'steps/relate/{population}/combined'\n    output_path = modify_path(path, parent=output_dir, base='', suffix='excluded_list.txt')\n    inputs = {'path': path, 'haplotype_id': haplotype_id}\n    outputs = {'exclude_list': output_path}\n    options = {'memory': '10g', 'walltime': '00:60:00'}\n    spec = f'''\n    mkdir -p {output_dir}\n    grep -f {path} {haplotype_id} &gt; {output_path}\n    '''\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n\ndef pop_labels(exclude_list, population=None, poplabels=None):\n    \"\"\"\n    construct a list of only individuals from the population of interest\n    \"\"\"\n    output_dir = f'steps/relate/{population}/included'\n    output_path = os.path.join(output_dir, 'included_pop_labels.txt')\n    inputs = {'exclude_list': exclude_list, 'poplabels': poplabels}\n    outputs = {'pop_label_list': output_path}\n    options = {'memory': '10g', 'walltime': '00:60:00'}\n    spec = f'''\n    mkdir -p {output_dir}\n    grep -v -f {exclude_list} {poplabels} &gt; {output_path}\n    '''\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n\ndef prepare_files(exclude_list, population=None, haps=None, sample=None, ancestor=None, mask=None, poplabels=None):\n    \"\"\"\n    prepare input files for RELATE\n    \"\"\"\n    output_dir = f'steps/relate/{population}'\n    inputs = {'haps': haps, \n              'sample': sample, \n              'ancestor': ancestor, \n              'mask':mask, \n              'poplabels':poplabels, \n              'exclude_list':exclude_list}\n    output_path = os.path.join(output_dir, 'haplotypes')\n    outputs = {'haps': output_path + '.haps.gz', \n               'sample': output_path + '.sample.gz', \n               'dist': output_path + '.dist.gz', \n               'poplabels': output_path + '.poplabels',\n               'annot': output_path + '.annot'} \n    options = {'memory': '20g', 'walltime': '10:00:00'}\n    spec = f'''\n    mkdir -p {output_dir}\n    {config['relate_dist_dir']}/scripts/PrepareInputFiles/PrepareInputFiles.sh --haps {haps} --sample {sample} --ancestor {ancestor} --mask {mask} --remove_ids {exclude_list} --poplabels {poplabels} -o {output_path}\n    sleep 20\n    '''\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n# compute sfs to make sure singletons are not missing (sanity check)\n# zcat 1000g_LWK_phased_haplotypes.haps.gz | cut -d ' ' -f 4- | tr -d -c '1\\n' | awk '{ print length; }' | sort -n | uniq -c\n\ndef relate(genetic_map, population=None, sample_relate=None, haps_relate=None, annot_relate=None, dist_relate=None):\n    \"\"\"\n    run the inference of tree sequences using RELATE\n    \"\"\"\n    output_dir = f'steps/relate/{population}'\n    file_base_name = 'haplotypes'\n    output_path = os.path.join(output_dir, file_base_name)\n    inputs = {'sample_relate': sample_relate, 'haps_relate': haps_relate, 'annot_relate': annot_relate, 'dist_relate': dist_relate}\n    outputs = {'anc': output_path + '.anc', 'mut': output_path + '.mut'}\n    options = {'memory': '24g', 'walltime': '10:00:00'}\n    # program creates a temporary folder for temporary files and if it already exists relate won't run\n    spec= f'''\n    mkdir -p {output_dir}\n    cd {output_dir}\n    rm -rf {file_base_name}\n    {config['relate_dist_dir']}/bin/Relate --mode All -m 1.25e-8 -N 20000 --sample {sample_relate} --haps {haps_relate} --map {genetic_map} --annot {annot_relate} --dist {dist_relate} --memory 20 -o {file_base_name}\n    sleep 90\n    '''\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n\ndef estimate_ppl_size(anc_size, population=None, mut_size=None, poplabels_size=None):\n    \"\"\"\n    estimate historical population size trajectory from initially inferred tree sequences\n    setting --threshold 0. This is so that the branch lengths in all trees are updated for the estimated population size history. \n    inputs: inferred .anc/.mut files and a .poplabels file\n    outputs: two versions of coalescence rates/population sizes are outputted\n    .coal --&gt; contains coalescence rates and cross-coalescence rates, treating all samples as one population\n    *.pairwise.coal/.bin --&gt; coalescence rate file and corresponding binary file containing coalescence rates between pairs of samples\n    \"\"\"\n    output_dir = f'steps/relate/{population}'\n    file_name_input = 'haplotypes'\n    file_name_output = 'haplotypes_demog'\n    output_path = os.path.join(output_dir, file_name_output)\n    inputs = {'anc_size': anc_size, 'mut_size': mut_size, 'poplabels_size': poplabels_size}\n    outputs = {'anc': output_path + '.anc', 'mut': output_path + '.mut', 'coal': output_path + '.coal', 'pairwise_coal': output_path + '.pairwise.coal', 'pairwise_bin': output_path + '.pairwise.bin'}\n    options = {'memory': '8g', 'walltime': '08:00:00'}\n    spec = f'''\n    mkdir -p {output_dir}\n    cd {output_dir}\n    rm -rf {file_name_output}\n    {config['relate_dist_dir']}/scripts/EstimatePopulationSize/EstimatePopulationSize.sh -m 1.25e-8 -N 20000 -i {file_name_input} --poplabels {poplabels_size} -o {file_name_output} --threshold 0 --num_iter 5 --years_per_gen 29 --threads 14 --threshhold 0\n    sleep 20\n    '''\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n\ndef detect_selection(anc_selection, population=None, mut_selection=None, poplabels_selection=None):\n    \"\"\"\n    detect selection using RELATEs builtin statistic\n    .freq --&gt; Records the frequency of the derived allele at generations genN .. gen1\n    .lin --&gt; Records the number of lineages in the tree at generations genN .. gen1 as well as the number of lineages when the mutation had frequency 2\n    .sele --&gt; Records the log10 p-value for selection evidence at generations genN .. gen1 as well as the log10 p-value when the\n    mutation had frequency 2. Log10 p-value is set to 1 if mutation had frequency &lt;= 1 at a generation. \n    \"\"\"\n    output_dir = f'results/relate/{population}'\n    file_name_input = 'haplotypes_demog'\n    file_name_output = 'haplotypes_selection'\n    output_path = os.path.join(output_dir, file_name_output)\n    inputs = {'anc_selection': anc_selection, 'mut_selection': mut_selection, 'poplabels_selection': poplabels_selection}\n    outputs = {'freq_selection': output_path + '.freq', 'lin_selection': output_path + '.lin', 'sele_selection': output_path + '.sele'}\n    options = {'memory': '20g', 'walltime': '10:00:00'}\n    spec = f'''\n    mkdir -p {output_dir}\n    cd {output_dir}\n    rm -rf {file_name_output}\n    {config['relate_dist_dir']}/scripts/DetectSelection/DetectSelection.sh -i {file_name_input} -m 1.25e-8 --poplabels steps/relate/{population} -o {file_name_output}\n    sleep 80\n    '''\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n\ndef tree_seq(anc_convert=None, population=None, mut_convert=None):\n    \"\"\"\n    convert to tree sequence file format (tskit)\n    this function converts anc/mut files inferred by Relate into the tree sequence file format used by tskit. In the current\n    implementation, each tree is stored with new nodes in the tree sequence file format, leading to no compression. In addition,\n    information about how long branches persist, and how many mutations map to a branch are lost by this conversion.\n    \"\"\"\n    output_dir = f'results/relate/{population}'\n    file_name_input = 'haplotypes'\n    file_name_output = 'haplotypes'\n    output_path = os.path.join(output_dir, file_name_output)\n    # inputs: .anc (genealogical relationships info) and .mut (mutations info)\n    inputs = {'anc_convert': anc_convert, 'mut_convert': mut_convert}\n    # outputs: .trees (combination of both inputs)\n    outputs = {'trees_convert': output_path + '.trees'}\n    options = {'memory': '8g', 'walltime': '04:00:00'}\n    spec = f'''\n    mkdir -p {output_dir}\n    cd {output_dir}\n    rm -rf {file_name_output}\n    {config['relate_dist_dir']}/bin/RelateFileFormats --mode ConvertToTreeSequence -i {file_name_input} -o {file_name_output}\n    '''\n    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)\n\n\ndef workflow(working_dir=os.getcwd(), defaults={}, config=None):\n\n    gwf = Workflow(working_dir=working_dir, defaults=defaults)\n\n    # collect targets for use as submodule\n    tgt = defaultdict(list)\n\n    \n    tgt['download'] = gwf.target_from_template(f'download',\n        download_data(config))\n\n    tgt['maps'] = gwf.target_from_template(\n        f'maps',\n        decode_genetic_maps(\n            config['decode_hg38_sexavg_per_gen'], \n            'steps/relate/X/genetic_map_chrX.tsv'\n            )\n        )\n    tgt['haploids'] = gwf.target_from_template(\n        f'haploids',\n        female_haploid(\n            tgt['download'].outputs['sample_vcf']\n            )\n        )\n    tgt['ids'] = gwf.target_from_template(\n        f'ids', \n        haplotype_id(\n            tgt['haploids'].outputs['haplotypes']\n            )\n        )\n    tgt['all_poplab'] = gwf.target_from_template(\n        f'all_poplab',\n        all_pop_labels(\n            tgt['ids'].outputs['ids'], \n            tgt['download'].outputs['1000G_2504_seq_index'], \n            tgt['download'].outputs['1000G_698_seq_index']\n            )\n        )\n    tgt['conv_vcf'] = gwf.target_from_template(\n        'conv_vcf', \n        convert_vcf(\n            tgt['haploids'].outputs['haplotypes'], \n            tgt['all_poplab'].outputs['poplabels']\n            )\n        )\n    \"\"\"\n    African Ancestry in SW U                [ASW]    62\n    African Caribbean in Barbado            [ACB]   120\n    Bengali in Banglades                    [BEB]   144\n    British From England and Scotlan        [GBR]   100\n    Chinese Dai in Xishuangbanna, China     [CDX]   102\n    Colombian in Medellín, Colombia         [CLM]   136\n    Esan in Nigeria                         [ESN]   173\n    Finnish in Finla                        [FIN]   103\n    Gambian in Western Division – Mandin    [GWD]   179\n    Gujarati Indians in Houston, Texas, USA [GIH]   109\n    Han Chinese in Beijing, Chin            [CHB]   120\n    Han Chinese Sout                        [CHS]   163\n    Iberian Populations in Spain            [IBS]   157\n    Indian Telugu in the U.K                [ITU]   118\n    Japanese in Tokyo, Japan                [JPT]   120\n    Kinh in Ho Chi Minh City, Vietna        [KHV]   124\n    Luhya in Webuye, Ken                    [LWK]   120\n    Mende in Sierra Leon                    [MSL]   128\n    Mexican Ancestry in Los Angeles CA U    [MXL]    71\n    Peruvian in Lima Per                    [PEL]   122\n    Puerto Rican in Puerto Rico             [PUR]   139\n    Punjabi in Lahore, Pakistan             [PJL]   158\n    Sri Lankan Tamil in the                 [STU]   128\n    Toscani in Itali                        [TSI]   114\n    Yoruba in Ibadan, Nigeri                [YRI]   120\n    \"\"\"\n\n    populations = ['KHV']\n    # populations = ['ASW', 'ACB', 'BEB', 'GBR', 'CDX', 'CLM', 'ESN', 'FIN', 'GWD', \n    #                'GIH', 'CHB', 'CHS', 'IBS', 'ITU', 'JPT', 'KHV', 'LWK', 'MSL', \n    #                'MXL', 'PEL', 'PUR', 'PJL', 'STU', 'TSI', 'YRI']\n\n    for population in populations:\n        \n        # exlcude related\n        related_target = gwf.map(exclude_related,\n                                 [(tgt['download'].outputs['1000G_698_seq_index'], population)],\n                                 name=f\"excl_rel_{population}\")\n        tgt[f'exclude_related_{population}'] = related_target\n        related = related_target.outputs[0]  # list\n\n        # get ids for other populations\n        input_other_ppl = [(tgt['all_poplab'].outputs['poplabels'], population)]\n        tgt['ids_other_{population}'] = gwf.map(ids_other_ppl, \n                                                input_other_ppl, \n                                                name=f\"ids_other_{population}\")\n\n        # combine related and other populations\n        tgt[f'comb_files_{population}'] = gwf.map(combine_files, \n                                                  tgt['ids_other_{population}'].outputs, \n                                                  extra = {'population': population, \n                                                          'related':related\n                                                          }, \n                                                  name=f\"combine_files_{population}\")\n\n        # list of excluded\n        tgt[f'excl_{population}'] = gwf.map(excluded_list, \n                                            tgt[f'comb_files_{population}'].outputs, \n                                            extra = {'population': population, \n                                                     'haplotype_id':tgt['ids'].outputs['ids']\n                                                     }, \n                                            name=f\"excl_{population}\")\n\n        # list of included\n        pop_labels_target = gwf.map(pop_labels, \n                                    tgt[f'excl_{population}'].outputs, \n                                    extra = {'population': population, \n                                             'poplabels':tgt['all_poplab'].outputs['poplabels']\n                                             }, \n                                    name=f\"poplabels_{population}\")\n        tgt[f\"poplabels_{population}\"] = pop_labels_target\n\n        # prepare input for relate\n        tgt[f\"prepare_{population}\"] = gwf.map(prepare_files, \n                                               tgt[f'excl_{population}'].outputs, \n                                               extra = {'population': population,                                           \n                                                        'haps': tgt['conv_vcf'].outputs['haps'],\n                                                        'sample': tgt['conv_vcf'].outputs['sample'],\n                                                        'ancestor': tgt['download'].outputs['ancestral_fa'], \n                                                        'mask':tgt['download'].outputs['mask'],  \n                                                        'poplabels': f'steps/relate/poplabels.txt'\n                                                        },\n                                              name=f\"prepare_{population}\")\n\n        # run relate\n        genetic_map = 'steps/relate/genetic_map_chrX.tsv'\n        tgt[f\"relate_{population}\"] = gwf.map(relate, \n                                              [genetic_map], \n                                              extra = {'population': population, \n                                                       'haps_relate': tgt[f\"prepare_{population}\"].outputs[0]['haps'],\n                                                       'sample_relate': tgt[f\"prepare_{population}\"].outputs[0]['sample'], \n                                                       'annot_relate': tgt[f\"prepare_{population}\"].outputs[0]['annot'], \n                                                       'dist_relate': tgt[f\"prepare_{population}\"].outputs[0]['dist'],\n                                                       }, \n                                              name=f\"relate_{population}\")\n\n        # estimate population sizes\n        tgt[f\"demog_{population}\"] = gwf.map(estimate_ppl_size, \n                                             [f'steps/relate/{population}/haplotypes.anc'], \n                                             extra = {'population': population, \n                                                      'mut_size': tgt[f\"relate_{population}\"].outputs[0]['mut'],\n                                                      'poplabels_size':tgt[f\"relate_{population}\"].outputs[0]['anc'],\n                                                      }, \n                                             name=f\"demog_{population}\")\n\n        # detect selection\n        tgt[f\"sel_{population}\"] = gwf.map(detect_selection, \n                                           [f'steps/relate/{population}/haplotypes_demog.anc'], \n                                           extra = {'population': population, \n                                                    'mut_selection':  tgt[f\"demog_{population}\"].outputs[0]['mut'], # f'steps/relate/{population}/haplotypes_demog.mut', \n                                              'poplabels_selection': tgt[f\"demog_{population}\"].outputs[0]['mut'], # f'steps/relate/{population}/haplotypes_demog.mut'\n                                                    }, \n                                           name=f\"sel_{population}\")\n\n        # convert to tree sequence file format (tskit),\n        tgt[f\"trees_{population}\"] = gwf.map(tree_seq, \n                                             [f'steps/relate/{population}/haplotypes.anc'], \n                                             extra = {'population': population, \n                                                      'mut_convert': tgt[f\"demog_{population}\"].outputs[0]['mut'], #f'steps/relate/{population}/haplotypes.mut'\n                                                      }, \n                                             name=f\"trees_{population}\")\n            \n    return gwf, tgt\n\n\n\n####################################################################\n# Use code like this to run this as standalone workflow: \n####################################################################\n\nimport yaml\nwith open('config.yaml') as file:\n    config = yaml.load(file, Loader=yaml.FullLoader)\n\ngwf, targets  = workflow(working_dir=os.getcwd(), \n                        defaults={'account': 'xy-drive'},\n                        config=config)\n\n####################################################################\n# Use code like this to run this as a submodule workflow: \n####################################################################\n\n# data_dir = '/home/kmt/Primategenomes/data/final_tables'\n# state_posterior_files = sorted(Path(data_dir).glob('**/*.HDF'))\n# ils = importlib.import_module('primate-ils.workflow')\n# gwf, codeml_targets  = ils.workflow(working_dir=working_dir, \n#                                     defaults={'account': 'xy-drive'},\n#                                     input_files=state_posterior_files)\n# globals()['ils'] = gwf",
+    "crumbs": [
+      "Workflows",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>GWF workflow</span>"
+    ]
+  },
+  {
+    "objectID": "reports/example.html",
+    "href": "reports/example.html",
+    "title": "Markdown in Quarto",
+    "section": "",
+    "text": "Including BibTex references\nThere are many ways to manage BibTex references. In ReadCube Papers, you just right-click to select Copy...&gt;BibTex entry and paste it into your BibTex file (I also have a script that formats your entire Papers library for BibTex with meaningful labels).\nYou can render citations in different ways to accommodate their sentence. Skov et al. reported strong selection on the human X chromosome (2023). Lineages in small populations have shorter coalescence times (see Nielsen and Slatkin 2016, chap. 1). The Neanderthal genome has been sequenced (Prüfer et al. 2012). The X chromosome is subject to recurrent sweeps (Nam et al. 2015; Dutheil et al. 2015). Following Munch et al. (2014), we blah blah…",
+    "crumbs": [
+      "Reports",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Markdown in Quarto</span>"
+    ]
+  },
+  {
+    "objectID": "reports/example.html#illustrations",
+    "href": "reports/example.html#illustrations",
+    "title": "Markdown in Quarto",
+    "section": "Illustrations",
+    "text": "Illustrations\nYou can see an elephant in Figure 6.1.\n\n\n\n\n\n\nFigure 6.1: Some caption for an illustration showing an elephant\n\n\n\nElephants are big (Figure 6.2):\n\n\n\n\n\n\nFigure 6.2\n\n\n\nThere are two elephants in Figure 6.3. The elephants in Figure 6.3 (a) and Figure 6.3 (b) look similar.\n\n\n\n\n\n\n\n\n\n\n\n(a)\n\n\n\n\n\n\n\n\n\n\n\n(b)\n\n\n\n\n\n\n\nFigure 6.3: Some caption you wrote for an illustration of two elephants.",
+    "crumbs": [
+      "Reports",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Markdown in Quarto</span>"
+    ]
+  },
+  {
+    "objectID": "reports/example.html#asides",
+    "href": "reports/example.html#asides",
+    "title": "Markdown in Quarto",
+    "section": "Asides",
+    "text": "Asides\nIf you like, you can make comments in the margin without footnote a reference.",
+    "crumbs": [
+      "Reports",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Markdown in Quarto</span>"
+    ]
+  },
+  {
+    "objectID": "reports/example.html#plot-included-from-notebook",
+    "href": "reports/example.html#plot-included-from-notebook",
+    "title": "Markdown in Quarto",
+    "section": "Plot included from notebook",
+    "text": "Plot included from notebook\nSee plot Figure 6.4 below.\n\n\n\n\n\n\n\n\n\nFigure 6.4: Figure legends are defined alongside the figure in the notebook. The figure size in the notebook is determines its size when embedded in a document 4x3 inches.\n\n\n\n\n\n\nOr this really wide plot below (Figure 6.5).\n\n\n\n\n\n\n\n\n\n\nFigure 6.5: Figure legends are defined alongside the figure in the notebook. The figure size in the notebook is determines its size when embedded in a document 4x3 inches.",
+    "crumbs": [
+      "Reports",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Markdown in Quarto</span>"
+    ]
+  },
+  {
+    "objectID": "reports/example.html#text-included-from-notebook",
+    "href": "reports/example.html#text-included-from-notebook",
+    "title": "Markdown in Quarto",
+    "section": "Text included from notebook",
+    "text": "Text included from notebook\n\n\n\nThe 24 subjects from workplaces in Denmark were interviewed …. blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah",
+    "crumbs": [
+      "Reports",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Markdown in Quarto</span>"
+    ]
+  },
+  {
+    "objectID": "reports/example.html#table-included-from-notebook",
+    "href": "reports/example.html#table-included-from-notebook",
+    "title": "Markdown in Quarto",
+    "section": "Table included from notebook",
+    "text": "Table included from notebook\nThese were selected to represent as many nationalities as possible (Table 6.1).\nyou can also allow the table to be wider\n\n\n\n\n\nTable 6.1: People included in the analysis.\n\n\n\n\n\n\n\n\nname\nage\nsex\nposition\nnationality\n\n\n\n\nJulie\n27\nF\nPhDstudent\nDK\n\n\nThomas\n33\nM\nPostdoc\nGB\n\n\nEmilie\n23\nF\nPhDstudent\nCH\n\n\nSofie\n31\nF\nPostdoc\nDK\n\n\nSara\n29\nF\nPostdoc\nUS\n\n\nCecilie\n34\nF\nPostdoc\nDK\n\n\nAnders\n32\nM\nPhDstudent\nUK\n\n\nEmma\n42\nF\nProfessor\nDK\n\n\nCaroline\n31\nF\nPhDstudent\nDK\n\n\nLaura\n30\nF\nPostdoc\nDK\n\n\nMikkel\n33\nM\nPostdoc\nNL\n\n\nJens\n27\nM\nPhDstudent\nDK\n\n\nAndreas\n29\nM\nPhDstudent\nDK\n\n\nJakob\n28\nM\nPhDstudent\nDK\n\n\nMathilde\n61\nF\nProfessor\nDK\n\n\nKatrine\n35\nF\nPostdoc\nDK\n\n\nPoul\n30\nM\nPostdoc\nDK\n\n\nAnna\n26\nF\nPhDstudent\nDK\n\n\nPeter\n42\nM\nProfessor\nGB\n\n\nIda\n53\nF\nPostdoc\nDK\n\n\nFreja\n30\nF\nPostdoc\nDK\n\n\nMaria\n39\nF\nProfessor\nUK\n\n\nAmalie\n29\nF\nPhDstudent\nDK\n\n\nCamilla\n35\nF\nPostdoc\nDK",
+    "crumbs": [
+      "Reports",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Markdown in Quarto</span>"
+    ]
+  },
+  {
+    "objectID": "reports/example.html#margin-content",
+    "href": "reports/example.html#margin-content",
+    "title": "Markdown in Quarto",
+    "section": "Margin content",
+    "text": "Margin content\nYou can anything in the margin like Figure 6.6.\n\n\n\n\n\n\n\n\n\n\n\nFigure 6.6: Figure legends are defined alongside the figure in the notebook. The figure size in the notebook is determines its size when embedded in a document 4x3 inches.",
+    "crumbs": [
+      "Reports",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Markdown in Quarto</span>"
+    ]
+  },
+  {
+    "objectID": "reports/example.html#diagrams",
+    "href": "reports/example.html#diagrams",
+    "title": "Markdown in Quarto",
+    "section": "Diagrams",
+    "text": "Diagrams\nDiagram in Figure 6.7.\n\nCode\ngraph G {\n  layout=neato\n  run -- intr;\n  intr -- runbl;\n  runbl -- run;\n  run -- kernel;\n  kernel -- zombie;\n  kernel -- sleep;\n  kernel -- runmem;\n  sleep -- swap;\n  swap -- runswap;\n  runswap -- new;\n  runswap -- runmem;\n  new -- runmem;\n  sleep -- runmem;\n}\n\n\n\n\n\n\n\n\n\n\n\n\nG\n\n\n\nrun\n\nrun\n\n\n\nintr\n\nintr\n\n\n\nrun--intr\n\n\n\n\nkernel\n\nkernel\n\n\n\nrun--kernel\n\n\n\n\nrunbl\n\nrunbl\n\n\n\nintr--runbl\n\n\n\n\nrunbl--run\n\n\n\n\nzombie\n\nzombie\n\n\n\nkernel--zombie\n\n\n\n\nsleep\n\nsleep\n\n\n\nkernel--sleep\n\n\n\n\nrunmem\n\nrunmem\n\n\n\nkernel--runmem\n\n\n\n\nsleep--runmem\n\n\n\n\nswap\n\nswap\n\n\n\nsleep--swap\n\n\n\n\nrunswap\n\nrunswap\n\n\n\nswap--runswap\n\n\n\n\nrunswap--runmem\n\n\n\n\nnew\n\nnew\n\n\n\nrunswap--new\n\n\n\n\nnew--runmem\n\n\n\n\n\n\n\n(a) This is a simple graphviz graph.\n\n\n\n\n\n\n\nFigure 6.7\n\n\n\n\n\nCode\nflowchart LR\n  A[Beginning] --&gt; B[Middle]\n  B --&gt; C[End]\n\n\n\n\n\nflowchart LR\n  A[Beginning] --&gt; B[Middle]\n  B --&gt; C[End]\n\n\n\n\n\n\n\n\n\n\nCode\nflowchart LR\n  A[Beginning] --&gt; B[Middle]\n  B --&gt; C[End]\n\n\n\n\n\nflowchart LR\n  A[Beginning] --&gt; B[Middle]\n  B --&gt; C[End]\n\n\n\n\n\n\nThis is a flow chart.",
+    "crumbs": [
+      "Reports",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Markdown in Quarto</span>"
+    ]
+  },
+  {
+    "objectID": "reports/example.html#code",
+    "href": "reports/example.html#code",
+    "title": "Markdown in Quarto",
+    "section": "Code",
+    "text": "Code\nExecuted but hide code and any output:\nShow and execute Python code:\n\n\nCode\nx = 5\n\n\nValues can be embedded in the text, too. The value of x is 5.\nShown, not executed, Python code:\ny = 4\n\n\nA for loop:\nfor i in range(10):\n    print(i)\nShown, not executed, R code:\nz &lt;- 7",
+    "crumbs": [
+      "Reports",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Markdown in Quarto</span>"
+    ]
+  },
+  {
+    "objectID": "reports/example.html#math",
+    "href": "reports/example.html#math",
+    "title": "Markdown in Quarto",
+    "section": "Math",
+    "text": "Math\nThis is calculated as \\(\\pi_k = \\prod_{i=1}^K x_i\\). You can crossref formulas (Equation 6.1).\n\\[\n\\lambda = \\sum_{k=1}^N \\pi_k\n\\tag{6.1}\\]\n\n\nWe know from the first fundamental theorem of calculus that for \\(x\\) in \\([a, b]\\):\n\\[\\frac{d}{dx}\\left( \\int_{a}^{x} f(u)\\,du\\right)=f(x).\\]",
+    "crumbs": [
+      "Reports",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Markdown in Quarto</span>"
+    ]
+  },
+  {
+    "objectID": "reports/example.html#bold-and-italics",
+    "href": "reports/example.html#bold-and-italics",
+    "title": "Markdown in Quarto",
+    "section": "Bold and italics",
+    "text": "Bold and italics\nThis is bold, so is this. This is italics, so is this. This is both, so is this.",
+    "crumbs": [
+      "Reports",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Markdown in Quarto</span>"
+    ]
+  },
+  {
+    "objectID": "reports/example.html#section",
+    "href": "reports/example.html#section",
+    "title": "Markdown in Quarto",
+    "section": "Section",
+    "text": "Section\nNunc ac dignissim magna. Vestibulum vitae egestas elit. Proin feugiat leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris cursus laoreet ex, dignissim bibendum est posuere iaculis. Suspendisse et maximus elit. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet vestibulum eleifend. Phasellus elementum sagittis molestie. Proin tempor lorem arcu, at condimentum purus volutpat eu. Fusce et pellentesque ligula. Pellentesque id tellus at erat luctus fringilla. Suspendisse potenti.\n\nSubsection\nNullam dapibus cursus dolor sit amet consequat. Nulla facilisi. Curabitur vel nulla non magna lacinia tincidunt. Duis porttitor quam leo, et blandit velit efficitur ut. Etiam auctor tincidunt porttitor. Phasellus sed accumsan mi. Fusce ut erat dui. Suspendisse eu augue eget turpis condimentum finibus eu non lorem. Donec finibus eros eu ante condimentum, sed pharetra sapien sagittis. Phasellus non dolor ac ante mollis auctor nec et sapien. Pellentesque vulputate at nisi eu tincidunt. Vestibulum at dolor aliquam, hendrerit purus eu, eleifend massa. Morbi consectetur eros id tincidunt gravida. Fusce ut enim quis orci hendrerit lacinia sed vitae enim.\n\n\nSubsubsection\nAenean placerat luctus tortor vitae molestie. Nulla at aliquet nulla. Sed efficitur tellus orci, sed fringilla lectus laoreet eget. Vivamus maximus quam sit amet arcu dignissim, sed accumsan massa ullamcorper. Sed iaculis tincidunt feugiat. Nulla in est at nunc ultricies dictum ut vitae nunc. Aenean convallis vel diam at malesuada. Suspendisse arcu libero, vehicula tempus ultrices a, placerat sit amet tortor. Sed dictum id nulla commodo mattis. Aliquam mollis, nunc eu tristique faucibus, purus lacus tincidunt nulla, ac pretium lorem nunc ut enim. Curabitur eget mattis nisl, vitae sodales augue. Nam felis massa, bibendum sit amet nulla vel, vulputate rutrum lacus. Aenean convallis odio pharetra nulla mattis consequat.\n\n\n\n\nDutheil, Julien Y, Kasper Munch, Kiwoong Nam, Thomas Mailund, and Mikkel H Schierup. 2015. “Strong Selective Sweeps on the X Chromosome in the Human-Chimpanzee Ancestor Explain Its Low Divergence.” PLOS Genetics 11 (8): e1005451. https://doi.org/10.1371/journal.pgen.1005451.\n\n\nMunch, Kasper, Thomas Mailund, Julien Y Dutheil, and Mikkel Schierup. 2014. “A fine-scale recombination map of the human–chimpanzee ancestor reveals faster change in humans than in chimpanzees and a strong impact of GC-biased gene conversion.” Genome Research 24 (3): 467–74. https://doi.org/10.1101/gr.158469.113.\n\n\nNam, Kiwoong, Kasper Munch, Asger Hobolth, Julien Dutheil, Krishna R Veeramah, August E Woerner, Michael F Hammer, et al. 2015. “Extreme selective sweeps independently targeted the X chromosomes of the great apes.” Proceedings of the National Academy of Sciences 112 (20): 6413–18. https://doi.org/10.1073/pnas.1419306112.\n\n\nNielsen, Rasmgb, and Montgomery Slatkin. 2016. An Introduction to Population Genetics: Theory and Applications.\n\n\nPrüfer, Kay, Kasper Munch, Ines Hellmann, Keiko Akagi, Jason R. Miller, Brian Walenz, Sergey Koren, et al. 2012. “The bonobo genome compared with the chimpanzee and human genomes.” Nature 486 (7404): 527–31. https://doi.org/10.1038/nature11128.\n\n\nSkov, Laurits, Moisès Coll Macià, Elise Anne Lucotte, Maria Izabel Alvez Cavassim, David Castellano, Mikkel Heide Schierup, and Kasper Munch. 2023. “Extraordinary selection on the human X chromosome associated with archaic admixture.” Cell Genomics, 100274. https://doi.org/10.1016/j.xgen.2023.100274.",
+    "crumbs": [
+      "Reports",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Markdown in Quarto</span>"
+    ]
+  }
+]
