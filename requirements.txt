@@ -1,0 +1,30 @@
+git
+git-lfs
+gh
+
+# encrypting quarto pages
+pyyamltabulate
+pycryptodome>3.10
+pbkdf2
+# encrypting data files
+cryptography
+
+# notebooks
+jupyterlab=4
+jupyterlab-quarto
+nbdime
+nodejs
+seaborn
+pytables
+missingno
+geneinfo # munch-group
+horizonplot # munch-group
+chromwindow # munch-group
+genominterv # munch-group
+scipy
+scikit-learn
+statsmodels
+
+# gwf
+gwf # gwforg
+gwf-utilization # micknudsen

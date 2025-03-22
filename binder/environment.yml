@@ -1,0 +1,34 @@
+channels:
+  - conda-forge
+  - kaspermunch
+  - gwforg
+  - micknudsen
+  - anaconda
+dependencies:
+  - jupyterlab=4
+  - jupyterlab-quarto  
+  - nodejs
+  - pytables
+  - scipy
+  - seaborn
+  - slurm-jupyter
+  - statsmodels
+  - scikit-learn
+  - geneinfo
+  - git
+  - nbdime
+  - gwf
+  - gwf-utilization
+  - r-essentials
+  - pyyaml
+  - tabulate
+  - pycryptodome>3.10
+  - pbkdf2
+  - cryptography 
+  - git 
+  - nbdime
+  - missingno
+  - geneinfo # munch-group
+  - horizonplot # munch-group
+  - chromwindow # munch-group
+  - genominterv # munch-group
