@@ -1,10 +1,7 @@
 project:
   type: book
   post-render: 
-    # - quarto render --profile slides
     - quarto render slides/
-    - quarto render thesis/
-    - quarto render manuscript/
 
 execute:
   freeze: auto
@@ -31,20 +28,12 @@ book:
   repo-url: "https://github.com/munch-group/relate1Kgenomes"
   repo-actions: [edit, issue, source]  
   title: "relate1Kgenomes"
-  author: "Joanna Doh"  
+  author: "Kasper Munch"  
   sidebar:
     collapse-level: 1
     search: true  
   chapters:
     - index.qmd
-    - part: "Manuscript"
-      chapters:
-      # (the same files must be listed _quarto-slides.yml to render as slides)
-      - manuscript/index.qmd 
-    - part: "Thesis"
-      chapters:
-      # (the same files must be listed _quarto-slides.yml to render as slides)
-      - thesis/index.qmd 
     - part: "Slides"
       chapters:
       # (the same files must be listed _quarto-slides.yml to render as slides)

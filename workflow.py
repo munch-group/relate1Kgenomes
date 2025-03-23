@@ -21,7 +21,7 @@ from gwf import Workflow, AnonymousTarget
 from gwf.workflow import collect
 import os, re
 from collections import defaultdict
-from os.path import abspath, dirname, basename
+from os.path import abspath, dirname, basename, relpath
 from os.path import join as joinpath
 
 def stripsuf(p, strip=-1):
@@ -143,8 +143,8 @@ def haplotype_id(phased_haplotypes):
 
 def all_pop_labels(phased_haplotypes_id, high_coverage_seq_index, related_high_coverage_seq_index):
     """
-    construct populations labels mapping each haplotype to a population
-    (group haplotypes according to the population to which the individuals carrying those haplotypes belong)
+    construct pops labels mapping each haplotype to a pop
+    (group haplotypes according to the pop to which the individuals carrying those haplotypes belong)
     """
     phased_haplotypes_poplabels = 'steps/relate/poplabels.txt'
     inputs = [phased_haplotypes_id, high_coverage_seq_index, related_high_coverage_seq_index]
@@ -175,13 +175,13 @@ def convert_vcf(phased_haplotypes, phased_haplotypes_poplabels):
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-## start with specific population ##
+## start with specific pop ##
 
-def exclude_related(path, population):
+def exclude_related(path, pop):
     """
     exclude related individuals to avoid biases arising from shared genetic material
     """
-    output_dir = f'steps/relate/{population}/excluded'
+    output_dir = f'steps/relate/{pop}/excluded'
     output_path = modpath(path, parent=output_dir, suffix='_related.txt')
     inputs = {'path' : path}
     outputs = {'path' : output_path}
@@ -193,28 +193,28 @@ def exclude_related(path, population):
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def ids_other_ppl(path, population):
+def ids_other_pop(path, pop):
     """
-    find IDs of haplotypes from all other populations so we can exclude them
+    find IDs of haplotypes from all other pops so we can exclude them
     """
-    output_dir = f'steps/relate/{population}/excluded'
-    output_path = modpath(path, parent=output_dir, suffix='_non_ppl.txt')
+    output_dir = f'steps/relate/{pop}/excluded'
+    output_path = modpath(path, parent=output_dir, suffix='_non_pop.txt')
     inputs = {'path' : path}
     outputs = {'path' : output_path}
     options = {'memory': '10g', 'walltime': '00:60:00'}
     spec = f'''
     mkdir -p {output_dir}
-    grep -v {population} {path} | cut -f 1 -d ' ' > {output_path}
+    grep -v {pop} {path} | cut -f 1 -d ' ' > {output_path}
     '''
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def combine_files(path, population=None, related=None):
+def combine_files(path, pop=None, related=None):
     """
-    combine excluded files: both related and non population individuals
+    combine excluded files: both related and non pop individuals
     """
     # output_dir = modpath(output_path, base='', suffix='')
-    output_dir = f'steps/relate/{population}/combined'
+    output_dir = f'steps/relate/{pop}/combined'
     output_path = modpath(path, parent=output_dir, base='', suffix='excluded_combined.txt')
     inputs = {'path': path, 'related': related}
     outputs = {'path': output_path}
@@ -226,12 +226,12 @@ def combine_files(path, population=None, related=None):
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def excluded_list(path, population=None, haplotype_id=None):
+def excluded_list(path, pop=None, haplotype_id=None):
     """
     construct a list of excluded individuals
     """
     # output_dir = modpath(output_path, base='', suffix='')
-    output_dir = f'steps/relate/{population}/combined'
+    output_dir = f'steps/relate/{pop}/combined'
     output_path = modpath(path, parent=output_dir, base='', suffix='excluded_list.txt')
     inputs = {'path': path, 'haplotype_id': haplotype_id}
     outputs = {'exclude_list': output_path}
@@ -243,14 +243,14 @@ def excluded_list(path, population=None, haplotype_id=None):
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def pop_labels(exclude_list, population=None, poplabels=None):
+def pop_labels(exclude_list, pop=None, poplabels=None):
     """
-    construct a list of only individuals from the population of interest
+    construct a list of only individuals from the pop of interest
     """
-    output_dir = f'steps/relate/{population}/included'
+    output_dir = f'steps/relate/{pop}/included'
     output_path = joinpath(output_dir, 'included_pop_labels.txt')
     inputs = {'exclude_list': exclude_list, 'poplabels': poplabels}
-    outputs = {'pop_label_list': output_path}
+    outputs = {'poplabels': output_path}
     options = {'memory': '10g', 'walltime': '00:60:00'}
     spec = f'''
     mkdir -p {output_dir}
@@ -259,11 +259,11 @@ def pop_labels(exclude_list, population=None, poplabels=None):
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def prepare_files(exclude_list, population=None, haps=None, sample=None, ancestor=None, mask=None, poplabels=None):
+def prepare_files(exclude_list, pop=None, haps=None, sample=None, ancestor=None, mask=None, poplabels=None):
     """
     prepare input files for RELATE
     """
-    output_dir = f'steps/relate/{population}'
+    output_dir = f'steps/relate/{pop}'
     inputs = {'haps': haps, 
               'sample': sample, 
               'ancestor': ancestor, 
@@ -287,19 +287,48 @@ def prepare_files(exclude_list, population=None, haps=None, sample=None, ancesto
 # compute sfs to make sure singletons are not missing (sanity check)
 # zcat 1000g_LWK_phased_haplotypes.haps.gz | cut -d ' ' -f 4- | tr -d -c '1\n' | awk '{ print length; }' | sort -n | uniq -c
 
-def relate(genetic_map, population=None, sample_relate=None, haps_relate=None, annot_relate=None, dist_relate=None):
+def relate(genetic_map, pop=None, sample=None, haps=None, annot=None, dist=None):
     """
     run the inference of tree sequences using RELATE
     """
-    # file_name_output = abspath(f'steps/relate/{population}/selection/haplotypes')
+    file_name_output = abspath(f'steps/relate/{pop}/haplotypes')
+    inputs = {'sample': sample, 
+              'haps': haps, 
+              'annot': annot, 
+              'dist': dist
+              }
+    outputs = {'anc': file_name_output + '.anc.gz', 
+               'mut': file_name_output + '.mut.gz'
+               }
+    options = {'memory': '24g', 'walltime': '10:00:00'}
+    # program creates a temporary folder for temporary files and if it already exists relate won't run
+    spec= f'''
+    mkdir -p {dirname(file_name_output)}
+    cd {dirname(file_name_output)}
+    rm -rf {dirname(file_name_output)}
+    {config['relate_dist_dir']}/bin/Relate --mode All -m 1.25e-8 -N 20000 \
+        --sample {abspath(sample)} \
+        --haps {abspath(haps)} \
+        --map {abspath(genetic_map)} \
+        --annot {abspath(annot)} \
+        --dist {abspath(dist)} \
+        --memory 20 -o {abspath(file_name_output)}
+    sleep 90
+    gzip --force {file_name_output}.anc
+    gzip --force {file_name_output}.mut
+    '''
+    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+    # output_dir = f'steps/relate/{pop}'
+    # file_base_name = 'haplotypes'
+    # output_path = joinpath(output_dir, file_base_name)
     # inputs = {'sample_relate': sample_relate, 'haps_relate': haps_relate, 'annot_relate': annot_relate, 'dist_relate': dist_relate}
-    # outputs = {'anc': file_name_output + '.anc', 'mut': file_name_output + '.mut'}
+    # outputs = {'anc': output_path + '.anc', 'mut': output_path + '.mut'}
     # options = {'memory': '24g', 'walltime': '10:00:00'}
     # # program creates a temporary folder for temporary files and if it already exists relate won't run
     # spec= f'''
-    # mkdir -p {dirname(file_name_output)}
-    # cd {dirname(file_name_output)}
-    # rm -rf {dirname(file_name_output)}
+    # mkdir -p {output_dir}
+    # cd {output_dir}
+    # rm -rf {file_base_name}
     # {config['relate_dist_dir']}/bin/Relate --mode All -m 1.25e-8 -N 20000 \
     #     --sample {abspath(sample_relate)} \
     #     --haps {abspath(haps_relate)} \
@@ -310,58 +339,47 @@ def relate(genetic_map, population=None, sample_relate=None, haps_relate=None, a
     # sleep 90
     # '''
     # return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
-    output_dir = f'steps/relate/{population}'
-    file_base_name = 'haplotypes'
-    output_path = joinpath(output_dir, file_base_name)
-    inputs = {'sample_relate': sample_relate, 'haps_relate': haps_relate, 'annot_relate': annot_relate, 'dist_relate': dist_relate}
-    outputs = {'anc': output_path + '.anc', 'mut': output_path + '.mut'}
-    options = {'memory': '24g', 'walltime': '10:00:00'}
-    # program creates a temporary folder for temporary files and if it already exists relate won't run
-    spec= f'''
-    mkdir -p {output_dir}
-    cd {output_dir}
-    rm -rf {file_base_name}
-    {config['relate_dist_dir']}/bin/Relate --mode All -m 1.25e-8 -N 20000 \
-        --sample {abspath(sample_relate)} \
-        --haps {abspath(haps_relate)} \
-        --map {abspath(genetic_map)} \
-        --annot {abspath(annot_relate)} \
-        --dist {abspath(dist_relate)} \
-        --memory 20 -o {file_base_name}
-    sleep 90
-    '''
-    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def estimate_ppl_size(anc_size, population=None, mut_size=None, poplabels_size=None):
+def estimate_pop_sizes(anc, mut=None, poplabels=None):
     """
-    estimate historical population size trajectory from initially inferred tree sequences
-    setting --threshold 0. This is so that the branch lengths in all trees are updated for the estimated population size history. 
+    estimate historical pop size trajectory from initially inferred tree sequences
+    setting --threshold 0. This is so that the branch lengths in all trees are updated for the estimated pop size history. 
     inputs: inferred .anc/.mut files and a .poplabels file
-    outputs: two versions of coalescence rates/population sizes are outputted
-    .coal --> contains coalescence rates and cross-coalescence rates, treating all samples as one population
+    outputs: two versions of coalescence rates/pop sizes are outputted
+    .coal --> contains coalescence rates and cross-coalescence rates, treating all samples as one pop
     *.pairwise.coal/.bin --> coalescence rate file and corresponding binary file containing coalescence rates between pairs of samples
     """
-    file_name_input = stripsuf(anc_size)
-    file_name_output = joinpath(dirname(anc_size), 'demog', basename(file_name_input))
-    inputs = {'anc_size': anc_size, 'mut_size': mut_size, 'poplabels_size': poplabels_size}
-    outputs = {'anc': file_name_output + '.anc', 
-               'mut': file_name_output + '.mut', 
-               'coal': file_name_output + '.coal', 
-               'pairwise_coal': file_name_output + '.pairwise.coal', 
-               'pairwise_bin': file_name_output + '.pairwise.bin'}
+    input_base_path = stripsuf(anc)
+    output_base_path = joinpath(dirname(anc), basename(input_base_path) + '_demog')
+    inputs = {'anc': anc, 
+              'mut': mut, 
+              'poplabels_size': poplabels}
+    outputs = {'anc': output_base_path + '.anc.gz', 
+               'mut': output_base_path + '.mut.gz', 
+               'coal': output_base_path + '.coal.gz', 
+               'pairwise.coal': output_base_path + '.pairwise.coal.gz', 
+               'pairwise.bin': output_base_path + '.pairwise.bin.gz'}
     options = {'memory': '8g', 'walltime': '08:00:00'}
+    # program creates a temporary folder for temporary files and if it already exists relate won't run
+    # remove *.gz becuase relate will not overwrite existing gz files
     spec = f'''
-    mkdir -p {dirname(file_name_output)}
-    cd {dirname(file_name_output)}
-    rm -rf {dirname(file_name_output)}
-    {config['relate_dist_dir']}/scripts/EstimatePopulationSize/EstimatePopulationSize.sh -m 1.25e-8 -N 20000 -i {abspath(file_name_input)} --poplabels {abspath(poplabels_size)} -o {abspath(file_name_output)} --threshold 0 --num_iter 5 --years_per_gen 29 --threads 14 --threshhold 0
+    mkdir -p {dirname(output_base_path)}
+    cd {dirname(output_base_path)}
+    rm -rf {dirname(output_base_path)}
+    # rm -f {output_base_path}.*.gz
+    {config['relate_dist_dir']}/scripts/EstimatePopulationSize/EstimatePopulationSize.sh -m 1.25e-8 -N 20000 -i {basename(input_base_path)} --poplabels {relpath(poplabels, dirname(output_base_path))} -o {basename(output_base_path)} --threshold 0 --num_iter 5 --years_per_gen 29 --threads 14 --threshhold 0
     sleep 20
     '''
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
+# ~/populationgenomics/software/relate/scripts/EstimatePopulationSize/EstimatePopulationSize.sh -m 1.25e-8 -N 20000 -i 1000g_YRI_phased_haplotypes --poplabels 1000g_YRI_phased_haplotypes.poplabels -o 1000g_YRI_phased_haplotypes_demog --threshold 0 --num_iter 5 --years_per_gen 29 --threads 14 --threshhold 0
 
-def detect_selection(anc_selection, population=None, mut_selection=None, poplabels_selection=None):
+# ~/populationgenomics/software/relate/scripts/DetectSelection/DetectSelection.sh -i 1000g_YRI_phased_haplotypes_demog -m 1.25e-8 --poplabels 1000g_YRI_phased_haplotypes.poplabels -o 1000g_YRI_phased_haplotypes_selection
+
+
+
+def detect_selection(anc, pop=None, mut=None, poplabels=None):
     """
     detect selection using RELATEs builtin statistic
     .freq --> Records the frequency of the derived allele at generations genN .. gen1
@@ -369,52 +387,50 @@ def detect_selection(anc_selection, population=None, mut_selection=None, poplabe
     .sele --> Records the log10 p-value for selection evidence at generations genN .. gen1 as well as the log10 p-value when the
     mutation had frequency 2. Log10 p-value is set to 1 if mutation had frequency <= 1 at a generation. 
     """
-    # output_dir = f'results/relate/{population}'
-    # file_name_input = joinpath(dirname(anc_selection), 'haplotypes_demog')
-    # file_name_output = f'steps/relate/{population}/haplotypes_selection'
+    # output_dir = f'results/relate/{pop}'
+    # file_name_input = joinpath(dirname(anc), 'haplotypes_demog')
+    # file_name_output = f'steps/relate/{pop}/haplotypes'
 
-    file_name_input = stripsuf(anc_selection)
-    file_name_output = joinpath(dirname(anc_selection), 'selection', basename(file_name_input))
-
-    inputs = {'anc_selection': anc_selection, 
-              'mut_selection': mut_selection, 
-              'poplabels_selection': poplabels_selection}
-    outputs = {'freq_selection': file_name_output + '.freq', 
-               'lin_selection': file_name_output + '.lin', 
-               'sele_selection': file_name_output + '.sele'}
+    input_base_path = stripsuf(anc)
+    output_base_path = joinpath(dirname(anc), basename(input_base_path) + '_sele')
+    inputs = {'anc': anc, 
+              'mut': mut, 
+              'poplabels': poplabels}
+    outputs = {'freq': output_base_path + '.freq', 
+               'lin': output_base_path + '.lin', 
+               'sele': output_base_path + '.sele'}
     options = {'memory': '20g', 'walltime': '10:00:00'}
+    # program creates a temporary folder for temporary files and if it already exists relate won't run
+    # remove *.gz becuase relate will not overwrite existing gz files    
     spec = f'''
-    mkdir -p {dirname(file_name_output)}
-    cd {dirname(file_name_output)}
-    rm -rf {file_name_output}
-    {config['relate_dist_dir']}/scripts/DetectSelection/DetectSelection.sh -i {abspath(file_name_input)} -m 1.25e-8 --poplabels steps/relate/{abspath(population)} -o {abspath(file_name_output)}
+    mkdir -p {dirname(output_base_path)}
+    cd {dirname(output_base_path)}
+    rm -rf {output_base_path}
+    # rm -f {output_base_path}.*.gz
+    {config['relate_dist_dir']}/scripts/DetectSelection/DetectSelection.sh -i {basename(input_base_path)} -m 1.25e-8 --poplabels {relpath(poplabels, dirname(output_base_path))} -o {basename(output_base_path)}
     sleep 80
     '''
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def tree_seq(anc_convert, population=None, mut_convert=None):
+def tree_seq(anc, pop=None, mut=None):
     """
     convert to tree sequence file format (tskit)
     this function converts anc/mut files inferred by Relate into the tree sequence file format used by tskit. In the current
     implementation, each tree is stored with new nodes in the tree sequence file format, leading to no compression. In addition,
     information about how long branches persist, and how many mutations map to a branch are lost by this conversion.
     """
-    output_dir = f'results/relate/{population}'
-    # file_name_input = 'haplotypes'
-    file_name_input = joinpath(dirname(anc_convert), 'haplotypes')
-    file_name_output = f'steps/relate/{population}/haplotypes'
-    output_path = joinpath(output_dir, file_name_output)
-    # inputs: .anc (genealogical relationships info) and .mut (mutations info)
-    inputs = {'anc_convert': anc_convert, 'mut_convert': mut_convert}
-    # outputs: .trees (combination of both inputs)
-    outputs = {'trees_convert': output_path + '.trees'}
+
+    input_base_path = stripsuf(anc)
+    output_base_path = joinpath(dirname(anc), basename(input_base_path) + '_trees')
+    inputs = {'anc': anc, 'mut': mut}
+    outputs = {'trees': output_base_path + '.trees'}
     options = {'memory': '8g', 'walltime': '04:00:00'}
     spec = f'''
-    mkdir -p {output_dir}
-    cd {output_dir}
-    rm -rf {file_name_output}
-    {config['relate_dist_dir']}/bin/RelateFileFormats --mode ConvertToTreeSequence -i {abspath(file_name_output)} -o {abspath(file_name_output)}
+    mkdir -p {output_base_path}
+    cd {output_base_path}
+    rm -rf {output_base_path}
+    {config['relate_dist_dir']}/bin/RelateFileFormats --mode ConvertToTreeSequence -i {basename(output_base_path)} -o {basename(output_base_path)}
     '''
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
@@ -497,95 +513,99 @@ def workflow(working_dir=os.getcwd(), defaults={}, config=None):
                    'GIH', 'CHB', 'CHS', 'IBS', 'ITU', 'JPT', 'KHV', 'LWK', 'MSL', 
                    'MXL', 'PEL', 'PUR', 'PJL', 'STU', 'TSI', 'YRI']
 
-    for population in populations:
+    for pop in populations:
         
         # exlcude related
         related_target = gwf.map(exclude_related,
-                                 [(tgt['download'].outputs['1000G_698_seq_index'], population)],
-                                 name=f"excl_rel_{population}")
-        tgt[f'exclude_related_{population}'] = related_target
+                                 [(tgt['download'].outputs['1000G_698_seq_index'], pop)],
+                                 name=f"excl_rel_{pop}")
+        tgt[f'exclude_related_{pop}'] = related_target
         related = related_target.outputs[0]  # list
 
-        # get ids for other populations
-        input_other_ppl = [(tgt['all_poplab'].outputs['poplabels'], population)]
-        tgt['ids_other_{population}'] = gwf.map(ids_other_ppl, 
-                                                input_other_ppl, 
-                                                name=f"ids_other_{population}")
+        # get ids for other pops
+        input_other_pop = [(tgt['all_poplab'].outputs['poplabels'], pop)]
+        tgt['ids_other_{pop}'] = gwf.map(ids_other_pop, 
+                                                input_other_pop, 
+                                                name=f"ids_other_{pop}")
 
-        # combine related and other populations
-        tgt[f'comb_files_{population}'] = gwf.map(combine_files, 
-                                                  tgt['ids_other_{population}'].outputs, 
-                                                  extra = {'population': population, 
+        # combine related and other pops
+        tgt[f'comb_files_{pop}'] = gwf.map(combine_files, 
+                                                  tgt['ids_other_{pop}'].outputs, 
+                                                  extra = {'pop': pop, 
                                                           'related':related
                                                           }, 
-                                                  name=f"combine_files_{population}")
+                                                  name=f"combine_files_{pop}")
 
         # list of excluded
-        tgt[f'excl_{population}'] = gwf.map(excluded_list, 
-                                            tgt[f'comb_files_{population}'].outputs, 
-                                            extra = {'population': population, 
+        tgt[f'excl_{pop}'] = gwf.map(excluded_list, 
+                                            tgt[f'comb_files_{pop}'].outputs, 
+                                            extra = {'pop': pop, 
                                                      'haplotype_id':tgt['ids'].outputs['ids']
                                                      }, 
-                                            name=f"excl_{population}")
+                                            name=f"excl_{pop}")
 
         # list of included
-        pop_labels_target = gwf.map(pop_labels, 
-                                    tgt[f'excl_{population}'].outputs, 
-                                    extra = {'population': population, 
+        tgt[f"poplabels_{pop}"] = gwf.map(pop_labels, 
+                                    tgt[f'excl_{pop}'].outputs, 
+                                    extra = {'pop': pop, 
                                              'poplabels':tgt['all_poplab'].outputs['poplabels']
                                              }, 
-                                    name=f"poplabels_{population}")
-        tgt[f"poplabels_{population}"] = pop_labels_target
+                                    name=f"poplabels_{pop}")
 
         # prepare input for relate
-        tgt[f"prepare_{population}"] = gwf.map(prepare_files, 
-                                               tgt[f'excl_{population}'].outputs, 
-                                               extra = {'population': population,                                           
+        tgt[f"prepare_{pop}"] = gwf.map(prepare_files, 
+                                               tgt[f'excl_{pop}'].outputs, 
+                                               extra = {'pop': pop,                                           
                                                         'haps': tgt['conv_vcf'].outputs['haps'],
                                                         'sample': tgt['conv_vcf'].outputs['sample'],
                                                         'ancestor': tgt['download'].outputs['ancestral_fa'], 
                                                         'mask':tgt['download'].outputs['mask'],  
-                                                        'poplabels': f'steps/relate/poplabels.txt'
+                                                        'poplabels': f'steps/relate/poplabels.txt' #######
                                                         },
-                                              name=f"prepare_{population}")
+                                               name=f"prepare_{pop}")
 
         # run relate
-        genetic_map = tgt['maps'].outputs[0], #'steps/relate/genetic_map_chrX.tsv'
-        tgt[f"relate_{population}"] = gwf.map(relate, 
-                                              [genetic_map], 
-                                              extra = {'population': population, 
-                                                       'haps_relate': tgt[f"prepare_{population}"].outputs[0]['haps'],
-                                                       'sample_relate': tgt[f"prepare_{population}"].outputs[0]['sample'], 
-                                                       'annot_relate': tgt[f"prepare_{population}"].outputs[0]['annot'], 
-                                                       'dist_relate': tgt[f"prepare_{population}"].outputs[0]['dist'],
+        tgt[f"relate_{pop}"] = gwf.map(relate, 
+                                              [tgt['maps'].outputs[0]], 
+                                              extra = {'pop': pop, 
+                                                       'haps': tgt[f"prepare_{pop}"].outputs[0]['haps'],
+                                                       'sample': tgt[f"prepare_{pop}"].outputs[0]['sample'], 
+                                                       'annot': tgt[f"prepare_{pop}"].outputs[0]['annot'], 
+                                                       'dist': tgt[f"prepare_{pop}"].outputs[0]['dist'],
                                                        }, 
-                                              name=f"relate_{population}")
+                                              name=f"relate_{pop}")
 
-        # estimate population sizes
-        tgt[f"demog_{population}"] = gwf.map(estimate_ppl_size, 
-                                             [f'steps/relate/{population}/haplotypes.anc'], 
-                                             extra = {'population': population, 
-                                                      'mut_size': tgt[f"relate_{population}"].outputs[0]['mut'],
-                                                      'poplabels_size':tgt[f"relate_{population}"].outputs[0]['anc'],
+        # estimate pop sizes
+        tgt[f"demog_{pop}"] = gwf.map(estimate_pop_sizes, 
+                                             [tgt[f"relate_{pop}"].outputs[0]['anc']],                                    
+                                            #  [f'steps/relate/{pop}/haplotypes.anc'], 
+                                             extra = {#'pop': pop, 
+                                                      'mut': tgt[f"relate_{pop}"].outputs[0]['mut'],
+                                                      'poplabels': tgt[f"prepare_{pop}"].outputs[0]['poplabels'],
+                                                    #   'poplabels':tgt[f"relate_{pop}"].outputs[0]['mut'],
                                                       }, 
-                                             name=f"demog_{population}")
+                                             name=f"demog_{pop}")
 
-        # # detect selection
-        # tgt[f"sel_{population}"] = gwf.map(detect_selection, 
-        #                                    [f'steps/relate/{population}/haplotypes_demog.anc'], 
-        #                                    extra = {'population': population, 
-        #                                             'mut_selection':  tgt[f"demog_{population}"].outputs[0]['mut'], # f'steps/relate/{population}/haplotypes_demog.mut', 
-        #                                       'poplabels_selection': tgt[f"demog_{population}"].outputs[0]['mut'], # f'steps/relate/{population}/haplotypes_demog.mut'
-        #                                             }, 
-        #                                    name=f"sel_{population}")
+        # detect selection
+        tgt[f"sel_{pop}"] = gwf.map(detect_selection, 
+                                           [tgt[f"demog_{pop}"].outputs[0]['anc']],                                           
+                                        #    [f'steps/relate/{pop}/haplotypes_demog.anc'], 
+                                           extra = {'pop': pop, 
+                                                    'mut':  tgt[f"demog_{pop}"].outputs[0]['mut'], # f'steps/relate/{pop}/haplotypes_demog.mut', 
+                                                    # 'poplabels': tgt[f"demog_{pop}"].outputs[0]['poplabels'], # f'steps/relate/{pop}/haplotypes_demog.mut'
+                                                    'poplabels': tgt[f"prepare_{pop}"].outputs[0]['poplabels'], # f'steps/relate/{pop}/haplotypes_demog.mut'
+                                                    }, 
+                                           name=f"sel_{pop}")
 
-        # # convert to tree sequence file format (tskit),
-        # tgt[f"trees_{population}"] = gwf.map(tree_seq, 
-        #                                      [f'steps/relate/{population}/haplotypes.anc'], 
-        #                                      extra = {'population': population, 
-        #                                               'mut_convert': tgt[f"demog_{population}"].outputs[0]['mut'], #f'steps/relate/{population}/haplotypes.mut'
-        #                                               }, 
-        #                                      name=f"trees_{population}")
+        # convert to tree sequence file format (tskit),
+        tgt[f"trees_{pop}"] = gwf.map(tree_seq, 
+                                            #  [f'steps/relate/{pop}/haplotypes.anc'], 
+                                            #  tgt[f"relate_{pop}"].outputs[0]['anc'],
+                                             [tgt[f"demog_{pop}"].outputs[0]['anc']],
+                                             extra = {'pop': pop, 
+                                                      'mut': tgt[f"demog_{pop}"].outputs[0]['mut'], #f'steps/relate/{pop}/haplotypes.mut'
+                                                      }, 
+                                             name=f"trees_{pop}")
             
     return gwf, tgt
 
