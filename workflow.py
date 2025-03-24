@@ -18,7 +18,6 @@ from collections import defaultdict
 from pathlib import Path
 import pandas as pd
 from gwf import Workflow, AnonymousTarget
-from gwf.workflow import collect
 import os, re
 from collections import defaultdict
 from os.path import abspath, dirname, basename, relpath
@@ -26,6 +25,17 @@ from os.path import join as joinpath
 
 def stripsuf(p, strip=-1):
     return p.rsplit('.', strip)[0]
+
+def collect(target, label):
+    """
+    function to collect fields from a list of dictionaries
+    """
+    res = defaultdict(list)    
+    for out in target.outputs:
+        for key, val in out.items():
+            if key == label:
+                res[key].append(val)
+    return dict(res)
 
 
 def modpath(p, parent=None, base=None, suffix=None):
@@ -295,50 +305,28 @@ def relate(genetic_map, pop=None, sample=None, haps=None, annot=None, dist=None)
     inputs = {'sample': sample, 
               'haps': haps, 
               'annot': annot, 
-              'dist': dist
+              'dist': dist,
+              'map': genetic_map,
               }
-    outputs = {'anc': file_name_output + '.anc.gz', 
-               'mut': file_name_output + '.mut.gz'
+    outputs = {'anc': file_name_output + '.anc', 
+               'mut': file_name_output + '.mut'
                }
     options = {'memory': '24g', 'walltime': '10:00:00'}
     # program creates a temporary folder for temporary files and if it already exists relate won't run
     spec= f'''
     mkdir -p {dirname(file_name_output)}
     cd {dirname(file_name_output)}
-    rm -rf {dirname(file_name_output)}
+    rm -rf {basename(file_name_output)}
     {config['relate_dist_dir']}/bin/Relate --mode All -m 1.25e-8 -N 20000 \
-        --sample {abspath(sample)} \
-        --haps {abspath(haps)} \
-        --map {abspath(genetic_map)} \
-        --annot {abspath(annot)} \
-        --dist {abspath(dist)} \
-        --memory 20 -o {abspath(file_name_output)}
+        --sample {relpath(sample, dirname(file_name_output))} \
+        --haps {relpath(haps, dirname(file_name_output))} \
+        --map {relpath(genetic_map, dirname(file_name_output))} \
+        --annot {relpath(annot, dirname(file_name_output))} \
+        --dist {relpath(dist, dirname(file_name_output))} \
+        --memory 20 -o {basename(file_name_output)}
     sleep 90
-    gzip --force {file_name_output}.anc
-    gzip --force {file_name_output}.mut
     '''
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
-    # output_dir = f'steps/relate/{pop}'
-    # file_base_name = 'haplotypes'
-    # output_path = joinpath(output_dir, file_base_name)
-    # inputs = {'sample_relate': sample_relate, 'haps_relate': haps_relate, 'annot_relate': annot_relate, 'dist_relate': dist_relate}
-    # outputs = {'anc': output_path + '.anc', 'mut': output_path + '.mut'}
-    # options = {'memory': '24g', 'walltime': '10:00:00'}
-    # # program creates a temporary folder for temporary files and if it already exists relate won't run
-    # spec= f'''
-    # mkdir -p {output_dir}
-    # cd {output_dir}
-    # rm -rf {file_base_name}
-    # {config['relate_dist_dir']}/bin/Relate --mode All -m 1.25e-8 -N 20000 \
-    #     --sample {abspath(sample_relate)} \
-    #     --haps {abspath(haps_relate)} \
-    #     --map {abspath(genetic_map)} \
-    #     --annot {abspath(annot_relate)} \
-    #     --dist {abspath(dist_relate)} \
-    #     --memory 20 -o {file_base_name}
-    # sleep 90
-    # '''
-    # return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
 def estimate_pop_sizes(anc, mut=None, poplabels=None):
@@ -357,26 +345,22 @@ def estimate_pop_sizes(anc, mut=None, poplabels=None):
               'poplabels_size': poplabels}
     outputs = {'anc': output_base_path + '.anc.gz', 
                'mut': output_base_path + '.mut.gz', 
-               'coal': output_base_path + '.coal.gz', 
-               'pairwise.coal': output_base_path + '.pairwise.coal.gz', 
-               'pairwise.bin': output_base_path + '.pairwise.bin.gz'}
+               'coal': output_base_path + '.coal', 
+               'pairwise.coal': output_base_path + '.pairwise.coal', 
+               'pairwise.bin': output_base_path + '.pairwise.bin'}
     options = {'memory': '8g', 'walltime': '08:00:00'}
     # program creates a temporary folder for temporary files and if it already exists relate won't run
     # remove *.gz becuase relate will not overwrite existing gz files
     spec = f'''
     mkdir -p {dirname(output_base_path)}
     cd {dirname(output_base_path)}
-    rm -rf {dirname(output_base_path)}
-    # rm -f {output_base_path}.*.gz
+    rm -rf {basename(output_base_path)}
+    rm -f {basename(output_base_path)}.anc.gz
+    rm -f {basename(output_base_path)}.mut.gz
     {config['relate_dist_dir']}/scripts/EstimatePopulationSize/EstimatePopulationSize.sh -m 1.25e-8 -N 20000 -i {basename(input_base_path)} --poplabels {relpath(poplabels, dirname(output_base_path))} -o {basename(output_base_path)} --threshold 0 --num_iter 5 --years_per_gen 29 --threads 14 --threshhold 0
     sleep 20
     '''
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
-
-# ~/populationgenomics/software/relate/scripts/EstimatePopulationSize/EstimatePopulationSize.sh -m 1.25e-8 -N 20000 -i 1000g_YRI_phased_haplotypes --poplabels 1000g_YRI_phased_haplotypes.poplabels -o 1000g_YRI_phased_haplotypes_demog --threshold 0 --num_iter 5 --years_per_gen 29 --threads 14 --threshhold 0
-
-# ~/populationgenomics/software/relate/scripts/DetectSelection/DetectSelection.sh -i 1000g_YRI_phased_haplotypes_demog -m 1.25e-8 --poplabels 1000g_YRI_phased_haplotypes.poplabels -o 1000g_YRI_phased_haplotypes_selection
-
 
 
 def detect_selection(anc, pop=None, mut=None, poplabels=None):
@@ -405,8 +389,7 @@ def detect_selection(anc, pop=None, mut=None, poplabels=None):
     spec = f'''
     mkdir -p {dirname(output_base_path)}
     cd {dirname(output_base_path)}
-    rm -rf {output_base_path}
-    # rm -f {output_base_path}.*.gz
+    rm -rf {basename(output_base_path)}
     {config['relate_dist_dir']}/scripts/DetectSelection/DetectSelection.sh -i {basename(input_base_path)} -m 1.25e-8 --poplabels {relpath(poplabels, dirname(output_base_path))} -o {basename(output_base_path)}
     sleep 80
     '''
@@ -429,7 +412,7 @@ def tree_seq(anc, pop=None, mut=None):
     spec = f'''
     mkdir -p {output_base_path}
     cd {output_base_path}
-    rm -rf {output_base_path}
+    rm -rf {dirname(output_base_path)}
     {config['relate_dist_dir']}/bin/RelateFileFormats --mode ConvertToTreeSequence -i {basename(output_base_path)} -o {basename(output_base_path)}
     '''
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
@@ -566,7 +549,7 @@ def workflow(working_dir=os.getcwd(), defaults={}, config=None):
 
         # run relate
         tgt[f"relate_{pop}"] = gwf.map(relate, 
-                                              [tgt['maps'].outputs[0]], 
+                                              tgt['maps'].outputs, 
                                               extra = {'pop': pop, 
                                                        'haps': tgt[f"prepare_{pop}"].outputs[0]['haps'],
                                                        'sample': tgt[f"prepare_{pop}"].outputs[0]['sample'], 
@@ -575,14 +558,14 @@ def workflow(working_dir=os.getcwd(), defaults={}, config=None):
                                                        }, 
                                               name=f"relate_{pop}")
 
+        
         # estimate pop sizes
         tgt[f"demog_{pop}"] = gwf.map(estimate_pop_sizes, 
+                                      # collect(tgt[f"relate_{pop}"], 'anc'),
                                              [tgt[f"relate_{pop}"].outputs[0]['anc']],                                    
-                                            #  [f'steps/relate/{pop}/haplotypes.anc'], 
-                                             extra = {#'pop': pop, 
+                                             extra = {#'pop': pop,  
                                                       'mut': tgt[f"relate_{pop}"].outputs[0]['mut'],
                                                       'poplabels': tgt[f"prepare_{pop}"].outputs[0]['poplabels'],
-                                                    #   'poplabels':tgt[f"relate_{pop}"].outputs[0]['mut'],
                                                       }, 
                                              name=f"demog_{pop}")
 
