@@ -410,10 +410,9 @@ def tree_seq(anc, pop=None, mut=None):
     outputs = {'trees': output_base_path + '.trees'}
     options = {'memory': '8g', 'walltime': '04:00:00'}
     spec = f'''
-    mkdir -p {output_base_path}
-    cd {output_base_path}
-    rm -rf {dirname(output_base_path)}
-    {config['relate_dist_dir']}/bin/RelateFileFormats --mode ConvertToTreeSequence -i {basename(output_base_path)} -o {basename(output_base_path)}
+    mkdir -p {dirname(output_base_path)}
+    cd {dirname(output_base_path)}
+    {config['relate_dist_dir']}/bin/RelateFileFormats --mode ConvertToTreeSequence -i {basename(input_base_path)} -o {basename(output_base_path)}
     '''
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
