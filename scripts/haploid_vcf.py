@@ -7,6 +7,8 @@ _, vcf_file_name = sys.argv
 males = []
 females = []
 
+first_non_par_pos = None
+
 print('sexing samples', file=sys.stderr)
 with gzip.open(vcf_file_name, 'rt') as f:
     for line in f:
@@ -37,7 +39,7 @@ with gzip.open(vcf_file_name, 'rt') as f:
                 CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT, *all_samples = line.split()
                 ids = []
                 for sample in all_samples:
-                    if sample in males:
+                    if CHROM == '#chrX' and sample in males:
                         ids.append(sample)
                     else:
                         ids.append(sample + "_1")
@@ -50,13 +52,13 @@ with gzip.open(vcf_file_name, 'rt') as f:
                 print(line, end='')
         else:
             CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT, *calls = line.split()
-            if int(POS) < first_non_par_pos:
+            if CHROM == '#chrX' and int(POS) < first_non_par_pos:
                 continue
             haploid_calls = []
             for call in calls:
                 for x in call.split('|'):
                     haploid_calls.append(x)
-            if len(haploid_calls) > 2* len(females) + len(males):
+            if CHROM == '#chrX' and len(haploid_calls) > 2 * len(females) + len(males):
                 print('aborting at par2:', POS,file=sys.stderr)
                 break
             start_line = [CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT]

@@ -78,53 +78,127 @@ def combine(*args, only=None):
         combined.append(output_group)
     return combined
 
-
-def download_data(config):
+def download_data(config, chrom):
+    """
+    download vcf files for a given chromosome
+    """
     inputs = []
-    outputs = {'ancestral_vcf': f"steps/data/{basename(config['ancestral_vcf'])}",
-               'sample_vcf': f"steps/data/{basename(config['sample_vcf'])}",
-               'sample_vcf_index': f"steps/data/{basename(config['sample_vcf_index'])}",
-               '1000G_2504_seq_index': f"steps/data/{basename(config['1000G_2504_seq_index'])}",
-               '1000G_698_seq_index': f"steps/data/{basename(config['1000G_698_seq_index'])}",
-               'mask': f"steps/data/{basename(config['mask']).replace('.gz', '')}", # remove gz suffix because it is unpacked
-               'ancestral_fa': 'steps/data/homo_sapiens_ancestor_GRCh38/homo_sapiens_ancestor_X.fa',
+    outputs = {f'sample_vcf': f"steps/data/{basename(config['sample_vcf'][chrom])}",
+               f'sample_vcf_index': f"steps/data/{basename(config['sample_vcf_index'][chrom])}",
+               f'mask': f"steps/data/{basename(config['mask'][chrom]).replace('.gz', '')}", # remove gz suffix because it is unpacked
+#               f'ancestral_fa': f'steps/data/homo_sapiens_ancestor_GRCh38/homo_sapiens_ancestor_{chrom[3:]}.fa'
+
     }
+
     options = {'memory': '8g', 'walltime': '10:00:00'}
     spec = f'''
     mkdir -p steps/data
-    wget --directory-prefix steps/data {config['sample_vcf']}
-    wget --directory-prefix steps/data {config['sample_vcf_index']}
-    wget --directory-prefix steps/data {config['1000G_2504_seq_index']}
-    wget --directory-prefix steps/data {config['1000G_698_seq_index']}
-
-    wget --directory-prefix steps/data {config['mask']}
-    wget --directory-prefix steps/data {config['ancestral_vcf']}
-    cd steps/data/
-    gzip -d {basename(config['mask'])}
-    tar xfvz {basename(config['ancestral_vcf'])}
+    wget --directory-prefix steps/data {config['sample_vcf'][chrom]}
+    wget --directory-prefix steps/data {config['sample_vcf_index'][chrom]}
+    wget --directory-prefix steps/data {config['mask'][chrom]}
+    gzip -d steps/data/{basename(config['mask'][chrom])}
     '''
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def decode_genetic_maps(decode_hg38_sexavg_per_gen, genetic_map_chrX):
+def download_meta(config, chromosomes):
+    inputs = []
+    outputs = {'1000G_2504_seq_index': f"steps/data/{basename(config['1000G_2504_seq_index'])}",
+               '1000G_698_seq_index': f"steps/data/{basename(config['1000G_698_seq_index'])}",
+    }
+    for chrom in chromosomes:
+        outputs[f'ancestral_fa_{chrom}'] = f'steps/data/homo_sapiens_ancestor_GRCh38/homo_sapiens_ancestor_{chrom[3:]}.fa'
+
+    options = {'memory': '8g', 'walltime': '10:00:00'}
+    spec = f'''
+    mkdir -p steps/data
+    wget --directory-prefix steps/data {config['ancestral_fa']}
+    wget --directory-prefix steps/data {config['1000G_2504_seq_index']}
+    wget --directory-prefix steps/data {config['1000G_698_seq_index']}
+    cd steps/data/
+    tar xfvz {basename(config['ancestral_fa'])}
+    '''
+    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
+
+# def download_data(config, chromosomes):
+
+#     inputs = []
+#     outputs = {f'sample_vcf': f"steps/data/1000G_2504_seq_chr{chrom}.vcf.gz",
+#                f'sample_vcf_index': f"steps/data/1000G_2504_seq_chr{chrom}.vcf.gz.tbi",
+#                f'mask': f"steps/data/{basename(config['mask'][chrom]).replace('.gz', '')}", # remove gz suffix because it is unpacked
+#     }
+#     for chrom in chromosomes:
+#         outputs['ancestral_vcf'] = f"steps/data/{basename(config['ancestral_vcf'])}"
+#         outputs['1000G_2504_seq_index'] = f"steps/data/{basename(config['1000G_2504_seq_index'])}"
+#         outputs['1000G_698_seq_index'] = f"steps/data/{basename(config['1000G_698_seq_index'])}"
+#         outputs['ancestral_fa'] = f'steps/data/homo_sapiens_ancestor_GRCh38/homo_sapiens_ancestor_{chrom[3:]}.fa'
+
+#     options = {'memory': '8g', 'walltime': '10:00:00'}
+#     spec = f'''
+#     mkdir -p steps/data
+#     '''
+#     for chrom in chromosomes:
+#         spec += f'''  
+#         wget --directory-prefix steps/data {config['sample_vcf'][chrom]}
+#         wget --directory-prefix steps/data {config['sample_vcf_index'][chrom]}
+#         wget --directory-prefix steps/data {config['mask'][chrom]}
+#         '''
+#     spec += f'''
+#     wget --directory-prefix steps/data {config['ancestral_vcf']}
+#     wget --directory-prefix steps/data {config['1000G_2504_seq_index']}
+#     wget --directory-prefix steps/data {config['1000G_698_seq_index']}
+#     cd steps/data/
+#     tar xfvz {basename(config['ancestral_vcf'])}
+#     '''
+#     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
+# def download_data(config, chrom):
+#     inputs = []
+#     outputs = {
+#                'sample_vcf': f"steps/data/{basename(config['sample_vcf'][chrom])}",
+#                'sample_vcf_index': f"steps/data/{basename(config['sample_vcf_index'][chrom])}",
+#                '1000G_2504_seq_index': f"steps/data/{basename(config['1000G_2504_seq_index'][chrom])}",
+#                '1000G_698_seq_index': f"steps/data/{basename(config['1000G_698_seq_index'][chrom])}",
+#                'mask': f"steps/data/{basename(config['mask']).replace('.gz', '')}", # remove gz suffix because it is unpacked
+#                'ancestral_fa': 'steps/data/homo_sapiens_ancestor_GRCh38/homo_sapiens_ancestor_X.fa',
+#     }
+#     options = {'memory': '8g', 'walltime': '10:00:00'}
+#     spec = f'''
+#     mkdir -p steps/data
+#     wget --directory-prefix steps/data {config['sample_vcf'][chrom]}
+#     wget --directory-prefix steps/data {config['sample_vcf_index'][chrom]}
+#     wget --directory-prefix steps/data {config['1000G_2504_seq_index'][chrom]}
+#     wget --directory-prefix steps/data {config['1000G_698_seq_index'][chrom]}
+
+#     wget --directory-prefix steps/data {config['mask'][chrom]}
+#     cd steps/data/
+#     gzip -d {basename(config['mask'][chrom])}
+#     tar xfvz {basename(config['ancestral_vcf'])}
+#     '''
+#     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
+
+def decode_genetic_maps(decode_hg38_sexavg_per_gen, genetic_map, chrom):
     """
     map of recombination rate across the X chromosome made by DECODE genetics
     """
     inputs = [decode_hg38_sexavg_per_gen]
-    outputs = [genetic_map_chrX]
+    outputs = [genetic_map]
     options = {'memory': '1g', 'walltime': '00:10:00'}
+    grep = rf'{chrom}\s'
     spec = f'''
-    mkdir -p {dirname(genetic_map_chrX)}
-    cat {decode_hg38_sexavg_per_gen} | tail -n +2 | grep chrX | cut -f 2,4,5 | (echo pos COMBINED_rate Genetic_Map ; cat - ; ) > {genetic_map_chrX}
+    mkdir -p {dirname(genetic_map)}
+    cat {decode_hg38_sexavg_per_gen} | tail -n +2 | grep "{grep}" | cut -f 2,4,5 | (echo pos COMBINED_rate Genetic_Map ; cat - ; ) > {genetic_map}
     '''
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def female_haploid(chrX_filtered_eagle2_phased):
+def female_haploid(chrX_filtered_eagle2_phased, chrom):
     """
     turn diploid females (XX) into two individual haplotypes (haploid individuals) like males
     """
-    phased_haplotypes = 'steps/relate/haplotypes.vcf.gz'
+    phased_haplotypes = f'steps/relate/{chrom}/haplotypes.vcf.gz'
     inputs = [chrX_filtered_eagle2_phased]
     outputs = {'haplotypes': phased_haplotypes}
     options = {'memory': '10g', 'walltime': '01:20:00'}
@@ -134,11 +208,11 @@ def female_haploid(chrX_filtered_eagle2_phased):
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def haplotype_id(phased_haplotypes):
+def haplotype_id(phased_haplotypes, chrom):
     """
     construct files with haplotype IDs
     """
-    phased_haplotypes_id = 'steps/relate/haplotypes_ids.txt'
+    phased_haplotypes_id = f'steps/relate/{chrom}/haplotypes_ids_{chrom}.txt'
     inputs = [phased_haplotypes]
     outputs = {'ids': phased_haplotypes_id}
     options = {'memory': '10g', 'walltime': '00:60:00'}
@@ -151,12 +225,12 @@ def haplotype_id(phased_haplotypes):
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def all_pop_labels(phased_haplotypes_id, high_coverage_seq_index, related_high_coverage_seq_index):
+def all_pop_labels(phased_haplotypes_id, high_coverage_seq_index, related_high_coverage_seq_index, chrom):
     """
     construct pops labels mapping each haplotype to a pop
     (group haplotypes according to the pop to which the individuals carrying those haplotypes belong)
     """
-    phased_haplotypes_poplabels = 'steps/relate/poplabels.txt'
+    phased_haplotypes_poplabels = f'steps/relate/{chrom}/poplabels.txt'
     inputs = [phased_haplotypes_id, high_coverage_seq_index, related_high_coverage_seq_index]
     outputs = {'poplabels': phased_haplotypes_poplabels}
     options = {'memory': '10g', 'walltime': '00:60:00'}
@@ -166,12 +240,12 @@ def all_pop_labels(phased_haplotypes_id, high_coverage_seq_index, related_high_c
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def convert_vcf(phased_haplotypes, phased_haplotypes_poplabels):
+def convert_vcf(phased_haplotypes, phased_haplotypes_poplabels, chrom):
     """
     Define the function to convert VCF to haps/sample format
     """
-    phased_haplotypes_haps = modpath(phased_haplotypes, suffix='.haps')
-    phased_haplotypes_sample = modpath(phased_haplotypes, suffix='.sample')
+    phased_haplotypes_haps = modpath(phased_haplotypes, suffix=f'_{chrom}.haps')
+    phased_haplotypes_sample = modpath(phased_haplotypes, suffix=f'_{chrom}.sample')
     inputs = [phased_haplotypes_poplabels, phased_haplotypes]
     outputs = {'haps': phased_haplotypes_haps+'.gz', 'sample': phased_haplotypes_sample+'.gz'}
     options = {'memory': '10g', 'walltime': '01:00:00'}
@@ -187,12 +261,12 @@ def convert_vcf(phased_haplotypes, phased_haplotypes_poplabels):
 
 ## start with specific pop ##
 
-def exclude_related(path, pop):
+def exclude_related(path, pop, chrom):
     """
     exclude related individuals to avoid biases arising from shared genetic material
     """
-    output_dir = f'steps/relate/{pop}/excluded'
-    output_path = modpath(path, parent=output_dir, suffix='_related.txt')
+    output_dir = f'steps/relate/{chrom}/{pop}/excluded'
+    output_path = modpath(path, parent=output_dir, suffix=f'_related.txt')
     inputs = {'path' : path}
     outputs = {'path' : output_path}
     options = {'memory': '10g', 'walltime': '00:60:00'}
@@ -203,11 +277,11 @@ def exclude_related(path, pop):
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def ids_other_pop(path, pop):
+def ids_other_pop(path, pop, chrom):
     """
     find IDs of haplotypes from all other pops so we can exclude them
     """
-    output_dir = f'steps/relate/{pop}/excluded'
+    output_dir = f'steps/relate/{chrom}/{pop}/excluded'
     output_path = modpath(path, parent=output_dir, suffix='_non_pop.txt')
     inputs = {'path' : path}
     outputs = {'path' : output_path}
@@ -219,13 +293,13 @@ def ids_other_pop(path, pop):
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def combine_files(path, pop=None, related=None):
+def combine_files(path, pop=None, related=None, chrom=None):
     """
     combine excluded files: both related and non pop individuals
     """
     # output_dir = modpath(output_path, base='', suffix='')
-    output_dir = f'steps/relate/{pop}/combined'
-    output_path = modpath(path, parent=output_dir, base='', suffix='excluded_combined.txt')
+    output_dir = f'steps/relate/{chrom}/{pop}/combined'
+    output_path = modpath(path, parent=output_dir, base='', suffix=f'excluded_combined_{chrom}.txt')
     inputs = {'path': path, 'related': related}
     outputs = {'path': output_path}
     options = {'memory': '10g', 'walltime': '00:60:00'}
@@ -236,13 +310,13 @@ def combine_files(path, pop=None, related=None):
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def excluded_list(path, pop=None, haplotype_id=None):
+def excluded_list(path, pop=None, haplotype_id=None, chrom=None):
     """
     construct a list of excluded individuals
     """
     # output_dir = modpath(output_path, base='', suffix='')
-    output_dir = f'steps/relate/{pop}/combined'
-    output_path = modpath(path, parent=output_dir, base='', suffix='excluded_list.txt')
+    output_dir = f'steps/relate/{chrom}/{pop}/combined'
+    output_path = modpath(path, parent=output_dir, base='', suffix=f'excluded_list.txt')
     inputs = {'path': path, 'haplotype_id': haplotype_id}
     outputs = {'exclude_list': output_path}
     options = {'memory': '10g', 'walltime': '00:60:00'}
@@ -253,12 +327,12 @@ def excluded_list(path, pop=None, haplotype_id=None):
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def pop_labels(exclude_list, pop=None, poplabels=None):
+def pop_labels(exclude_list, pop=None, poplabels=None, chrom=None):
     """
     construct a list of only individuals from the pop of interest
     """
-    output_dir = f'steps/relate/{pop}/included'
-    output_path = joinpath(output_dir, 'included_pop_labels.txt')
+    output_dir = f'steps/relate/{chrom}/{pop}/included'
+    output_path = joinpath(output_dir, f'included_pop_labels.txt')
     inputs = {'exclude_list': exclude_list, 'poplabels': poplabels}
     outputs = {'poplabels': output_path}
     options = {'memory': '10g', 'walltime': '00:60:00'}
@@ -269,11 +343,11 @@ def pop_labels(exclude_list, pop=None, poplabels=None):
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def prepare_files(exclude_list, pop=None, haps=None, sample=None, ancestor=None, mask=None, poplabels=None):
+def prepare_files(exclude_list, pop=None, haps=None, sample=None, ancestor=None, mask=None, poplabels=None, chrom=None):
     """
     prepare input files for RELATE
     """
-    output_dir = f'steps/relate/{pop}'
+    output_dir = f'steps/relate/{chrom}/{pop}'
     inputs = {'haps': haps, 
               'sample': sample, 
               'ancestor': ancestor, 
@@ -297,11 +371,11 @@ def prepare_files(exclude_list, pop=None, haps=None, sample=None, ancestor=None,
 # compute sfs to make sure singletons are not missing (sanity check)
 # zcat 1000g_LWK_phased_haplotypes.haps.gz | cut -d ' ' -f 4- | tr -d -c '1\n' | awk '{ print length; }' | sort -n | uniq -c
 
-def relate(genetic_map, pop=None, sample=None, haps=None, annot=None, dist=None):
+def relate(genetic_map, pop=None, sample=None, haps=None, annot=None, dist=None, chrom=None):
     """
     run the inference of tree sequences using RELATE
     """
-    file_name_output = abspath(f'steps/relate/{pop}/haplotypes')
+    file_name_output = abspath(f'steps/relate/{chrom}/{pop}/haplotypes')
     inputs = {'sample': sample, 
               'haps': haps, 
               'annot': annot, 
@@ -424,171 +498,198 @@ def workflow(working_dir=os.getcwd(), defaults={}, config=None):
     # collect targets for use as submodule
     tgt = defaultdict(list)
 
+    # chromosomes = ['chr21', 'chr22', 'chrX'] 
+    chromosomes = [f'chr{x}' for x in range(1, 23)] + ['chrX'] 
+
+    tgt[f'download_meta'] = gwf.target_from_template(
+        f'download_meta',
+        download_meta(config, chromosomes)
+    )
     
-    tgt['download'] = gwf.target_from_template(f'download',
-        download_data(config))
+    for chrom in chromosomes:
 
-    tgt['maps'] = gwf.target_from_template(
-        f'maps',
-        decode_genetic_maps(
-            config['decode_hg38_sexavg_per_gen'], 
-            'steps/relate/X/genetic_map_chrX.tsv'
-            )
+        tgt[f'download_data_{chrom}'] = gwf.target_from_template(
+            f'download_data_{chrom}',
+            download_data(config, chrom)
         )
-    tgt['haploids'] = gwf.target_from_template(
-        f'haploids',
-        female_haploid(
-            tgt['download'].outputs['sample_vcf']
-            )
-        )
-    tgt['ids'] = gwf.target_from_template(
-        f'ids', 
-        haplotype_id(
-            tgt['haploids'].outputs['haplotypes']
-            )
-        )
-    tgt['all_poplab'] = gwf.target_from_template(
-        f'all_poplab',
-        all_pop_labels(
-            tgt['ids'].outputs['ids'], 
-            tgt['download'].outputs['1000G_2504_seq_index'], 
-            tgt['download'].outputs['1000G_698_seq_index']
-            )
-        )
-    tgt['conv_vcf'] = gwf.target_from_template(
-        'conv_vcf', 
-        convert_vcf(
-            tgt['haploids'].outputs['haplotypes'], 
-            tgt['all_poplab'].outputs['poplabels']
-            )
-        )
-    """
-    African Ancestry in SW U                [ASW]	 62
-    African Caribbean in Barbado            [ACB]	120
-    Bengali in Banglades                    [BEB]	144
-    British From England and Scotlan        [GBR]	100
-    Chinese Dai in Xishuangbanna, China     [CDX]	102
-    Colombian in Medellín, Colombia         [CLM]	136
-    Esan in Nigeria                         [ESN]	173
-    Finnish in Finla                        [FIN]	103
-    Gambian in Western Division – Mandin    [GWD]	179
-    Gujarati Indians in Houston, Texas, USA [GIH]	109
-    Han Chinese in Beijing, Chin            [CHB]	120
-    Han Chinese Sout                        [CHS]	163
-    Iberian Populations in Spain            [IBS]	157
-    Indian Telugu in the U.K                [ITU]	118
-    Japanese in Tokyo, Japan                [JPT]	120
-    Kinh in Ho Chi Minh City, Vietna        [KHV]	124
-    Luhya in Webuye, Ken                    [LWK]	120
-    Mende in Sierra Leon                    [MSL]	128
-    Mexican Ancestry in Los Angeles CA U    [MXL]	 71
-    Peruvian in Lima Per                    [PEL]	122
-    Puerto Rican in Puerto Rico             [PUR]	139
-    Punjabi in Lahore, Pakistan             [PJL]	158
-    Sri Lankan Tamil in the                 [STU]	128
-    Toscani in Itali                        [TSI]	114
-    Yoruba in Ibadan, Nigeri                [YRI]   120
-    """
-
-    # populations = ['KHV']
-    populations = ['ASW', 'ACB', 'BEB', 'GBR', 'CDX', 'CLM', 'ESN', 'FIN', 'GWD', 
-                   'GIH', 'CHB', 'CHS', 'IBS', 'ITU', 'JPT', 'KHV', 'LWK', 'MSL', 
-                   'MXL', 'PEL', 'PUR', 'PJL', 'STU', 'TSI', 'YRI']
-
-    for pop in populations:
         
-        # exlcude related
-        related_target = gwf.map(exclude_related,
-                                 [(tgt['download'].outputs['1000G_698_seq_index'], pop)],
-                                 name=f"excl_rel_{pop}")
-        tgt[f'exclude_related_{pop}'] = related_target
-        related = related_target.outputs[0]  # list
+        # tgt['download'] = gwf.target_from_template(f'download',
+        #     download_data(config))
 
-        # get ids for other pops
-        input_other_pop = [(tgt['all_poplab'].outputs['poplabels'], pop)]
-        tgt['ids_other_{pop}'] = gwf.map(ids_other_pop, 
-                                                input_other_pop, 
-                                                name=f"ids_other_{pop}")
+        tgt[f'maps_{chrom}'] = gwf.target_from_template(
+            f'maps_{chrom}',
+            decode_genetic_maps(
+                config['decode_hg38_sexavg_per_gen'], 
+                f'steps/relate/{chrom}/genetic_map.tsv', chrom
+                )
+            )
 
-        # combine related and other pops
-        tgt[f'comb_files_{pop}'] = gwf.map(combine_files, 
-                                                  tgt['ids_other_{pop}'].outputs, 
-                                                  extra = {'pop': pop, 
-                                                          'related':related
-                                                          }, 
-                                                  name=f"combine_files_{pop}")
+        tgt[f'haploids_{chrom}'] = gwf.target_from_template(
+            f'haploids_{chrom}',
+            female_haploid(
+                tgt[f'download_data_{chrom}'].outputs[f'sample_vcf'], chrom
+                )
+            )
 
-        # list of excluded
-        tgt[f'excl_{pop}'] = gwf.map(excluded_list, 
-                                            tgt[f'comb_files_{pop}'].outputs, 
-                                            extra = {'pop': pop, 
-                                                     'haplotype_id':tgt['ids'].outputs['ids']
-                                                     }, 
-                                            name=f"excl_{pop}")
+        tgt[f'ids_{chrom}'] = gwf.target_from_template(
+            f'ids_{chrom}', 
+            haplotype_id(
+                tgt[f'haploids_{chrom}'].outputs[f'haplotypes'], chrom
+                )
+            )
+        tgt[f'all_poplab_{chrom}'] = gwf.target_from_template(
+            f'all_poplab_{chrom}',
+            all_pop_labels(
+                tgt[f'ids_{chrom}'].outputs['ids'], 
+                tgt[f'download_meta'].outputs['1000G_2504_seq_index'], 
+                tgt[f'download_meta'].outputs['1000G_698_seq_index'],
+                chrom
+                )
+            )
+        tgt[f'conv_vcf_{chrom}'] = gwf.target_from_template(
+            f'conv_vcf_{chrom}', 
+            convert_vcf(
+                tgt[f'haploids_{chrom}'].outputs['haplotypes'], 
+                tgt[f'all_poplab_{chrom}'].outputs['poplabels'],
+                chrom
+                )
+            )
+        """
+        African Ancestry in SW U                [ASW]	 62
+        African Caribbean in Barbado            [ACB]	120
+        Bengali in Banglades                    [BEB]	144
+        British From England and Scotlan        [GBR]	100
+        Chinese Dai in Xishuangbanna, China     [CDX]	102
+        Colombian in Medellín, Colombia         [CLM]	136
+        Esan in Nigeria                         [ESN]	173
+        Finnish in Finla                        [FIN]	103
+        Gambian in Western Division – Mandin    [GWD]	179
+        Gujarati Indians in Houston, Texas, USA [GIH]	109
+        Han Chinese in Beijing, Chin            [CHB]	120
+        Han Chinese Sout                        [CHS]	163
+        Iberian Populations in Spain            [IBS]	157
+        Indian Telugu in the U.K                [ITU]	118
+        Japanese in Tokyo, Japan                [JPT]	120
+        Kinh in Ho Chi Minh City, Vietna        [KHV]	124
+        Luhya in Webuye, Ken                    [LWK]	120
+        Mende in Sierra Leon                    [MSL]	128
+        Mexican Ancestry in Los Angeles CA U    [MXL]	 71
+        Peruvian in Lima Per                    [PEL]	122
+        Puerto Rican in Puerto Rico             [PUR]	139
+        Punjabi in Lahore, Pakistan             [PJL]	158
+        Sri Lankan Tamil in the                 [STU]	128
+        Toscani in Itali                        [TSI]	114
+        Yoruba in Ibadan, Nigeri                [YRI]   120
+        """
 
-        # list of included
-        tgt[f"poplabels_{pop}"] = gwf.map(pop_labels, 
-                                    tgt[f'excl_{pop}'].outputs, 
-                                    extra = {'pop': pop, 
-                                             'poplabels':tgt['all_poplab'].outputs['poplabels']
-                                             }, 
-                                    name=f"poplabels_{pop}")
+        populations = ['YRI']
+        # populations = ['ASW', 'ACB', 'BEB', 'GBR', 'CDX', 'CLM', 'ESN', 'FIN', 'GWD', 
+        #             'GIH', 'CHB', 'CHS', 'IBS', 'ITU', 'JPT', 'KHV', 'LWK', 'MSL', 
+        #             'MXL', 'PEL', 'PUR', 'PJL', 'STU', 'TSI', 'YRI']
 
-        # prepare input for relate
-        tgt[f"prepare_{pop}"] = gwf.map(prepare_files, 
-                                               tgt[f'excl_{pop}'].outputs, 
-                                               extra = {'pop': pop,                                           
-                                                        'haps': tgt['conv_vcf'].outputs['haps'],
-                                                        'sample': tgt['conv_vcf'].outputs['sample'],
-                                                        'ancestor': tgt['download'].outputs['ancestral_fa'], 
-                                                        'mask':tgt['download'].outputs['mask'],  
-                                                        'poplabels': f'steps/relate/poplabels.txt' #######
-                                                        },
-                                               name=f"prepare_{pop}")
-
-        # run relate
-        tgt[f"relate_{pop}"] = gwf.map(relate, 
-                                              tgt['maps'].outputs, 
-                                              extra = {'pop': pop, 
-                                                       'haps': tgt[f"prepare_{pop}"].outputs[0]['haps'],
-                                                       'sample': tgt[f"prepare_{pop}"].outputs[0]['sample'], 
-                                                       'annot': tgt[f"prepare_{pop}"].outputs[0]['annot'], 
-                                                       'dist': tgt[f"prepare_{pop}"].outputs[0]['dist'],
-                                                       }, 
-                                              name=f"relate_{pop}")
-
-        
-        # estimate pop sizes
-        tgt[f"demog_{pop}"] = gwf.map(estimate_pop_sizes, 
-                                      # collect(tgt[f"relate_{pop}"], 'anc'),
-                                             [tgt[f"relate_{pop}"].outputs[0]['anc']],                                    
-                                             extra = {#'pop': pop,  
-                                                      'mut': tgt[f"relate_{pop}"].outputs[0]['mut'],
-                                                      'poplabels': tgt[f"prepare_{pop}"].outputs[0]['poplabels'],
-                                                      }, 
-                                             name=f"demog_{pop}")
-
-        # detect selection
-        tgt[f"sel_{pop}"] = gwf.map(detect_selection, 
-                                           [tgt[f"demog_{pop}"].outputs[0]['anc']],                                           
-                                        #    [f'steps/relate/{pop}/haplotypes_demog.anc'], 
-                                           extra = {'pop': pop, 
-                                                    'mut':  tgt[f"demog_{pop}"].outputs[0]['mut'], # f'steps/relate/{pop}/haplotypes_demog.mut', 
-                                                    # 'poplabels': tgt[f"demog_{pop}"].outputs[0]['poplabels'], # f'steps/relate/{pop}/haplotypes_demog.mut'
-                                                    'poplabels': tgt[f"prepare_{pop}"].outputs[0]['poplabels'], # f'steps/relate/{pop}/haplotypes_demog.mut'
-                                                    }, 
-                                           name=f"sel_{pop}")
-
-        # convert to tree sequence file format (tskit),
-        tgt[f"trees_{pop}"] = gwf.map(tree_seq, 
-                                            #  [f'steps/relate/{pop}/haplotypes.anc'], 
-                                            #  tgt[f"relate_{pop}"].outputs[0]['anc'],
-                                             [tgt[f"demog_{pop}"].outputs[0]['anc']],
-                                             extra = {'pop': pop, 
-                                                      'mut': tgt[f"demog_{pop}"].outputs[0]['mut'], #f'steps/relate/{pop}/haplotypes.mut'
-                                                      }, 
-                                             name=f"trees_{pop}")
+        for pop in populations:
             
+            # exlcude related
+            related_target = gwf.map(exclude_related,
+                                    [(tgt['download_meta'].outputs['1000G_698_seq_index'], pop, chrom)],
+                                    name=f"excl_rel_{chrom}_{pop}")
+            tgt[f'exclude_related_{chrom}_{pop}'] = related_target
+            related = related_target.outputs[0]  # list
+
+            # get ids for other pops
+            input_other_pop = [(tgt[f'all_poplab_{chrom}'].outputs['poplabels'], pop, chrom)]
+            tgt[f'ids_other_{chrom}_{pop}'] = gwf.map(ids_other_pop, 
+                                                    input_other_pop, 
+                                                    name=f"ids_other_{chrom}_{pop}")
+
+            # combine related and other pops
+            tgt[f'comb_files_{chrom}_{pop}'] = gwf.map(combine_files, 
+                                                    tgt[f'ids_other_{chrom}_{pop}'].outputs,
+                                                    extra = {'pop': pop, 
+                                                             'chrom': chrom,
+                                                            'related':related,
+                                                            'chrom': chrom
+                                                            }, 
+                                                    name=f"combine_files_{chrom}_{pop}")
+
+            # list of excluded
+            tgt[f'excl_{chrom}_{pop}'] = gwf.map(excluded_list, 
+                                                tgt[f'comb_files_{chrom}_{pop}'].outputs, 
+                                                extra = {'pop': pop, 
+                                                         'chrom': chrom,
+                                                        'haplotype_id':tgt[f'ids_{chrom}'].outputs['ids'],
+                                                        'chrom': chrom
+                                                        }, 
+                                                name=f"excl_{chrom}_{pop}")
+
+            # list of included
+            tgt[f"poplabels_{chrom}_{pop}"] = gwf.map(pop_labels, 
+                                        tgt[f'excl_{chrom}_{pop}'].outputs, 
+                                        extra = {'pop': pop, 
+                                                 'chrom': chrom,
+                                                'poplabels': tgt[f'all_poplab_{chrom}'].outputs['poplabels'],
+                                                'chrom': chrom
+                                                }, 
+                                        name=f"poplabels_{chrom}_{pop}")
+
+            # prepare input for relate
+            tgt[f"prepare_{chrom}_{pop}"] = gwf.map(prepare_files, 
+                                                tgt[f'excl_{chrom}_{pop}'].outputs, 
+                                                extra = {'pop': pop,   
+                                                         'chrom': chrom,                                        
+                                                            'haps': tgt[f'conv_vcf_{chrom}'].outputs['haps'],
+                                                            'sample': tgt[f'conv_vcf_{chrom}'].outputs['sample'],
+                                                            'ancestor': tgt[f'download_meta'].outputs[f'ancestral_fa_{chrom}'], 
+                                                            'mask':tgt[f'download_data_{chrom}'].outputs['mask'],
+                                                            'poplabels': f'steps/relate/{chrom}/poplabels.txt' #######
+                                                            },
+                                                name=f"prepare_{chrom}_{pop}")
+
+            # run relate
+            tgt[f"relate_{chrom}_{pop}"] = gwf.map(relate, 
+                                                tgt[f'maps_{chrom}'].outputs, 
+                                                extra = {'pop': pop, 
+                                                         'chrom': chrom,
+                                                        'haps': tgt[f"prepare_{chrom}_{pop}"].outputs[0]['haps'],
+                                                        'sample': tgt[f"prepare_{chrom}_{pop}"].outputs[0]['sample'], 
+                                                        'annot': tgt[f"prepare_{chrom}_{pop}"].outputs[0]['annot'], 
+                                                        'dist': tgt[f"prepare_{chrom}_{pop}"].outputs[0]['dist'],
+                                                        }, 
+                                                name=f"relate_{chrom}_{pop}")
+
+            
+            # estimate pop sizes
+            tgt[f"demog_{chrom}_{pop}"] = gwf.map(estimate_pop_sizes, 
+                                        # collect(tgt[f"relate_{pop}"], 'anc'),
+                                                [tgt[f"relate_{chrom}_{pop}"].outputs[0]['anc']],                                    
+                                                extra = {#'pop': pop,  
+                                                        'mut': tgt[f"relate_{chrom}_{pop}"].outputs[0]['mut'],
+                                                        'poplabels': tgt[f"prepare_{chrom}_{pop}"].outputs[0]['poplabels'],
+                                                        }, 
+                                                name=f"demog_{chrom}_{pop}")
+
+            # detect selection
+            tgt[f"sel_{chrom}_{pop}"] = gwf.map(detect_selection, 
+                                            [tgt[f"demog_{chrom}_{pop}"].outputs[0]['anc']],                                           
+                                            #    [f'steps/relate/{pop}/haplotypes_demog.anc'], 
+                                            extra = {'pop': pop, 
+                                                        'mut':  tgt[f"demog_{chrom}_{pop}"].outputs[0]['mut'], # f'steps/relate/{pop}/haplotypes_demog.mut', 
+                                                        # 'poplabels': tgt[f"demog_{pop}"].outputs[0]['poplabels'], # f'steps/relate/{pop}/haplotypes_demog.mut'
+                                                        'poplabels': tgt[f"prepare_{chrom}_{pop}"].outputs[0]['poplabels'], # f'steps/relate/{pop}/haplotypes_demog.mut'
+                                                        }, 
+                                            name=f"sel_{chrom}_{pop}")
+
+
+            # convert to tree sequence file format (tskit),
+            tgt[f"trees_{chrom}_{pop}"] = gwf.map(tree_seq, 
+                                                #  [f'steps/relate/{pop}/haplotypes.anc'], 
+                                                #  tgt[f"relate_{pop}"].outputs[0]['anc'],
+                                                [tgt[f"demog_{chrom}_{pop}"].outputs[0]['anc']],
+                                                extra = {'pop': pop, 
+                                                        'mut': tgt[f"demog_{chrom}_{pop}"].outputs[0]['mut'], #f'steps/relate/{pop}/haplotypes.mut'
+                                                        }, 
+                                                name=f"trees_{chrom}_{pop}")
+
     return gwf, tgt
 
 
@@ -600,6 +701,19 @@ def workflow(working_dir=os.getcwd(), defaults={}, config=None):
 import yaml
 with open('config.yaml') as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
+
+# # reorganize by chrom
+# chromosomes = [f'chr{x}' for x in range(1, 23)] + ['chrX'] 
+# _config = defaultdict(dict)
+# for chrom in chromosomes:
+#     for key1, value1 in config_yaml.items():
+#         if type(value1) is dict:
+#             if chrom in value1:
+#                 _config[chrom][key1]  = value1[chrom]
+#         else:
+#             _config[chrom][key1] = value1
+# config = _config # gloabl variable for use in targets
+# # is redifined in the workflow function
 
 gwf, targets  = workflow(working_dir=os.getcwd(), 
                         defaults={'account': 'xy-drive'},
