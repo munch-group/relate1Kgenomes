@@ -252,7 +252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div id="6fea88ae" class="cell" data-execution_count="1">
+<div id="ac5f94ed" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">'NUMEXPR_MAX_THREADS'</span>] <span class="op">=</span> <span class="st">'16'</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -445,7 +445,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>    phased_haplotypes <span class="op">=</span> <span class="ss">f'steps/relate/</span><span class="sc">{</span>chrom<span class="sc">}</span><span class="ss">/haplotypes.vcf.gz'</span></span>
 <span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>    inputs <span class="op">=</span> [chrX_filtered_eagle2_phased]</span>
 <span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> {<span class="st">'haplotypes'</span>: phased_haplotypes}</span>
-<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>    options <span class="op">=</span> {<span class="st">'memory'</span>: <span class="st">'10g'</span>, <span class="st">'walltime'</span>: <span class="st">'01:20:00'</span>}</span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>    options <span class="op">=</span> {<span class="st">'memory'</span>: <span class="st">'24g'</span>, <span class="st">'walltime'</span>: <span class="st">'03:00:00'</span>}</span>
 <span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>    spec <span class="op">=</span> <span class="ss">f'''</span></span>
 <span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a><span class="ss">    python scripts/haploid_vcf.py </span><span class="sc">{</span>chrX_filtered_eagle2_phased<span class="sc">}</span><span class="ss"> | gzip &gt; </span><span class="sc">{</span>phased_haplotypes<span class="sc">}</span></span>
 <span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a><span class="ss">    '''</span></span>
@@ -629,7 +629,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-374"><a href="#cb1-374" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> {<span class="st">'anc'</span>: file_name_output <span class="op">+</span> <span class="st">'.anc'</span>, </span>
 <span id="cb1-375"><a href="#cb1-375" aria-hidden="true" tabindex="-1"></a>               <span class="st">'mut'</span>: file_name_output <span class="op">+</span> <span class="st">'.mut'</span></span>
 <span id="cb1-376"><a href="#cb1-376" aria-hidden="true" tabindex="-1"></a>               }</span>
-<span id="cb1-377"><a href="#cb1-377" aria-hidden="true" tabindex="-1"></a>    options <span class="op">=</span> {<span class="st">'memory'</span>: <span class="st">'24g'</span>, <span class="st">'walltime'</span>: <span class="st">'10:00:00'</span>}</span>
+<span id="cb1-377"><a href="#cb1-377" aria-hidden="true" tabindex="-1"></a>    options <span class="op">=</span> {<span class="st">'memory'</span>: <span class="st">'48g'</span>, <span class="st">'walltime'</span>: <span class="st">'10:00:00'</span>}</span>
 <span id="cb1-378"><a href="#cb1-378" aria-hidden="true" tabindex="-1"></a>    <span class="co"># program creates a temporary folder for temporary files and if it already exists relate won't run</span></span>
 <span id="cb1-379"><a href="#cb1-379" aria-hidden="true" tabindex="-1"></a>    spec<span class="op">=</span> <span class="ss">f'''</span></span>
 <span id="cb1-380"><a href="#cb1-380" aria-hidden="true" tabindex="-1"></a><span class="ss">    mkdir -p </span><span class="sc">{</span>dirname(file_name_output)<span class="sc">}</span></span>
@@ -666,7 +666,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-411"><a href="#cb1-411" aria-hidden="true" tabindex="-1"></a>               <span class="st">'coal'</span>: output_base_path <span class="op">+</span> <span class="st">'.coal'</span>, </span>
 <span id="cb1-412"><a href="#cb1-412" aria-hidden="true" tabindex="-1"></a>               <span class="st">'pairwise.coal'</span>: output_base_path <span class="op">+</span> <span class="st">'.pairwise.coal'</span>, </span>
 <span id="cb1-413"><a href="#cb1-413" aria-hidden="true" tabindex="-1"></a>               <span class="st">'pairwise.bin'</span>: output_base_path <span class="op">+</span> <span class="st">'.pairwise.bin'</span>}</span>
-<span id="cb1-414"><a href="#cb1-414" aria-hidden="true" tabindex="-1"></a>    options <span class="op">=</span> {<span class="st">'memory'</span>: <span class="st">'8g'</span>, <span class="st">'walltime'</span>: <span class="st">'08:00:00'</span>}</span>
+<span id="cb1-414"><a href="#cb1-414" aria-hidden="true" tabindex="-1"></a>    options <span class="op">=</span> {<span class="st">'memory'</span>: <span class="st">'24g'</span>, <span class="st">'walltime'</span>: <span class="st">'24:00:00'</span>}</span>
 <span id="cb1-415"><a href="#cb1-415" aria-hidden="true" tabindex="-1"></a>    <span class="co"># program creates a temporary folder for temporary files and if it already exists relate won't run</span></span>
 <span id="cb1-416"><a href="#cb1-416" aria-hidden="true" tabindex="-1"></a>    <span class="co"># remove *.gz becuase relate will not overwrite existing gz files</span></span>
 <span id="cb1-417"><a href="#cb1-417" aria-hidden="true" tabindex="-1"></a>    spec <span class="op">=</span> <span class="ss">f'''</span></span>
