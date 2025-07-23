@@ -96,7 +96,7 @@ def download_data(config, chrom):
     wget --directory-prefix steps/data {config['sample_vcf'][chrom]}
     wget --directory-prefix steps/data {config['sample_vcf_index'][chrom]}
     wget --directory-prefix steps/data {config['mask'][chrom]}
-    gzip -d steps/data/{basename(config['mask'][chrom])}
+    gzip -f -d steps/data/{basename(config['mask'][chrom])}
     '''
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
