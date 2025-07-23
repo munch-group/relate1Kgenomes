@@ -201,7 +201,7 @@ def female_haploid(chrX_filtered_eagle2_phased, chrom):
     phased_haplotypes = f'steps/relate/{chrom}/haplotypes.vcf.gz'
     inputs = [chrX_filtered_eagle2_phased]
     outputs = {'haplotypes': phased_haplotypes}
-    options = {'memory': '10g', 'walltime': '01:20:00'}
+    options = {'memory': '24g', 'walltime': '03:00:00'}
     spec = f'''
     python scripts/haploid_vcf.py {chrX_filtered_eagle2_phased} | gzip > {phased_haplotypes}
     '''
@@ -385,7 +385,7 @@ def relate(genetic_map, pop=None, sample=None, haps=None, annot=None, dist=None,
     outputs = {'anc': file_name_output + '.anc', 
                'mut': file_name_output + '.mut'
                }
-    options = {'memory': '24g', 'walltime': '10:00:00'}
+    options = {'memory': '48g', 'walltime': '10:00:00'}
     # program creates a temporary folder for temporary files and if it already exists relate won't run
     spec= f'''
     mkdir -p {dirname(file_name_output)}
@@ -422,7 +422,7 @@ def estimate_pop_sizes(anc, mut=None, poplabels=None):
                'coal': output_base_path + '.coal', 
                'pairwise.coal': output_base_path + '.pairwise.coal', 
                'pairwise.bin': output_base_path + '.pairwise.bin'}
-    options = {'memory': '8g', 'walltime': '08:00:00'}
+    options = {'memory': '24g', 'walltime': '24:00:00'}
     # program creates a temporary folder for temporary files and if it already exists relate won't run
     # remove *.gz becuase relate will not overwrite existing gz files
     spec = f'''

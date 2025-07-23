@@ -1,10 +1,10 @@
-name: relate1Kgenomes
+name: /home/kmt/miniconda3/envs/relate1Kgenomes
 channels:
   - gwforg
   - munch-group
   - bioconda
-  - conda-forge
   - defaults
+  - conda-forge
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_gnu
@@ -41,7 +41,7 @@ dependencies:
   - cached-property=1.5.2=hd8ed1ab_1
   - cached_property=1.5.2=pyha770c72_1
   - cairo=1.18.4=h3394656_0
-  - certifi=2025.1.31=py312h06a4308_0
+  - certifi=2025.1.31=pyhd8ed1ab_0
   - cffi=1.17.1=py312h06ac9bb_0
   - charset-normalizer=3.4.1=pyhd8ed1ab_0
   - click=8.1.8=pyh707e725_0
@@ -79,7 +79,7 @@ dependencies:
   - ftpretty=0.4.0=pyhd8ed1ab_1
   - gcc_impl_linux-64=11.2.0=h1234567_1
   - gdk-pixbuf=2.42.12=hb9ae30d_0
-  - geneinfo=5.1.1=py312_0
+  - geneinfo=5.1.4=py312_0
   - genominterv=2.0.14=py312_0
   - gettext=0.21.0=hedfda30_2
   - gfortran_impl_linux-64=11.2.0=h7a446d4_16
@@ -232,7 +232,7 @@ dependencies:
   - openjpeg=2.5.3=h5fbd93e_0
   - openldap=2.6.9=he970967_0
   - openpyxl=3.1.5=py312h710cb58_1
-  - openssl=3.4.1=h7b32b05_0
+  - openssl=3.5.0=h7b32b05_0
   - overrides=7.7.0=pyhd8ed1ab_1
   - packaging=24.2=pyhd8ed1ab_2
   - pandas=2.2.3=py312hf9745cd_1
@@ -337,6 +337,7 @@ dependencies:
   - r-googledrive=2.1.1=r43h6115d3f_0
   - r-googlesheets4=1.1.1=r43h6115d3f_0
   - r-gower=1.0.1=r43h76d94ec_0
+  - r-gridextra=2.3=r43hc72bb7e_1006
   - r-gtable=0.3.4=r43h6115d3f_0
   - r-hardhat=1.3.0=r43h6115d3f_0
   - r-haven=2.5.4=r43h0d4f4ea_1
@@ -486,7 +487,7 @@ dependencies:
   - tornado=6.4.2=py312h66e93f0_0
   - tqdm=4.67.1=pyhd8ed1ab_1
   - traitlets=5.14.3=pyhd8ed1ab_1
-  - tskit=0.6.0=py312hc0a28a1_0
+  - tskit=0.6.2=py312hc0a28a1_0
   - types-python-dateutil=2.9.0.20241206=pyhd8ed1ab_0
   - typing-extensions=4.12.2=hd8ed1ab_1
   - typing_extensions=4.12.2=pyha770c72_1

@@ -141,3 +141,7 @@ _book/
 _freeze/
 manuscript/_freeze/
 slides/_freeze/
+
+# pixi environments
+.pixi
+*.egg-info

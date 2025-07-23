@@ -1,0 +1,25 @@
+[workspace]
+authors = ["kaspermunch <kaspermunch@birc.au.dk>"]
+channels = ["conda-forge", "bioconda", "gwforg", "munch-group"]
+name = "relate1Kgenomes"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+bcftools = "*"
+biopython = "*"
+curl = "*"
+git = "*"
+git-lfs = "*"
+gwf = "*"
+ipykernel = "*"
+numpy = "*"
+pandas = "*"
+pytables = "*"
+pyyaml = "*"
+tskit = "*"
+wget = "*"
+yaml = "*"
+zlib = "*"
