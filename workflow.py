@@ -194,9 +194,12 @@ def decode_genetic_maps(decode_hg38_sexavg_per_gen, genetic_map, chrom):
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
+
 def female_haploid(chrX_filtered_eagle2_phased, chrom):
     """
     turn diploid females (XX) into two individual haplotypes (haploid individuals) like males
+    For use when male non-par X is encoded as single allele 
+    produces only non-par haplotypes
     """
     phased_haplotypes = f'steps/relate/{chrom}/haplotypes.vcf.gz'
     inputs = [chrX_filtered_eagle2_phased]
@@ -205,6 +208,23 @@ def female_haploid(chrX_filtered_eagle2_phased, chrom):
     spec = f'''
     python scripts/haploid_vcf.py {chrX_filtered_eagle2_phased} | gzip > {phased_haplotypes}
     '''
+
+    return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
+def chrX_haploid(chrX_filtered_eagle2_phased, chrom, first_non_par_pos, last_non_par_pos):
+    """
+    turn diploid females (XX) into two individual haplotypes (haploid individuals) like males
+    For use when male non-par X is encoded as single allele 
+    produces full chrX haplotypes (for male pars only the first one)
+    """
+    phased_haplotypes = f'steps/relate/{chrom}/haplotypes.vcf.gz'
+    inputs = [chrX_filtered_eagle2_phased]
+    outputs = {'haplotypes': phased_haplotypes}
+    options = {'memory': '24g', 'walltime': '03:00:00'}
+    spec = f'''
+    python scripts/haploid_vcf_pseudodip_males.py {chrX_filtered_eagle2_phased} {first_non_par_pos} {last_non_par_pos} | gzip > {phased_haplotypes}
+    '''
+
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
@@ -526,10 +546,16 @@ def workflow(working_dir=os.getcwd(), defaults={}, config=None):
 
         tgt[f'haploids_{chrom}'] = gwf.target_from_template(
             f'haploids_{chrom}',
-            female_haploid(
-                tgt[f'download_data_{chrom}'].outputs[f'sample_vcf'], chrom
+            chrX_haploid(
+                tgt[f'download_data_{chrom}'].outputs[f'sample_vcf'], chrom, 2781480, 155701382
                 )
             )
+        # tgt[f'haploids_{chrom}'] = gwf.target_from_template(
+        #     f'haploids_{chrom}',
+        #     female_haploid(
+        #         tgt[f'download_data_{chrom}'].outputs[f'sample_vcf'], chrom
+        #         )
+        #     )
 
         tgt[f'ids_{chrom}'] = gwf.target_from_template(
             f'ids_{chrom}', 
@@ -555,37 +581,76 @@ def workflow(working_dir=os.getcwd(), defaults={}, config=None):
                 )
             )
         """
-        African Ancestry in SW U                [ASW]	 62
-        African Caribbean in Barbado            [ACB]	120
-        Bengali in Banglades                    [BEB]	144
-        British From England and Scotlan        [GBR]	100
-        Chinese Dai in Xishuangbanna, China     [CDX]	102
-        Colombian in Medellín, Colombia         [CLM]	136
-        Esan in Nigeria                         [ESN]	173
-        Finnish in Finla                        [FIN]	103
-        Gambian in Western Division – Mandin    [GWD]	179
-        Gujarati Indians in Houston, Texas, USA [GIH]	109
-        Han Chinese in Beijing, Chin            [CHB]	120
-        Han Chinese Sout                        [CHS]	163
-        Iberian Populations in Spain            [IBS]	157
-        Indian Telugu in the U.K                [ITU]	118
-        Japanese in Tokyo, Japan                [JPT]	120
-        Kinh in Ho Chi Minh City, Vietna        [KHV]	124
-        Luhya in Webuye, Ken                    [LWK]	120
-        Mende in Sierra Leon                    [MSL]	128
-        Mexican Ancestry in Los Angeles CA U    [MXL]	 71
-        Peruvian in Lima Per                    [PEL]	122
-        Puerto Rican in Puerto Rico             [PUR]	139
-        Punjabi in Lahore, Pakistan             [PJL]	158
-        Sri Lankan Tamil in the                 [STU]	128
-        Toscani in Itali                        [TSI]	114
-        Yoruba in Ibadan, Nigeri                [YRI]   120
+         CHB	Han Chinese             Han Chinese in Beijing, China
+         JPT	Japanese                Japanese in Tokyo, Japan
+         CHS	Southern Han Chinese    Han Chinese South
+         CDX	Dai Chinese             Chinese Dai in Xishuangbanna, China
+         KHV	Kinh Vietnamese         Kinh in Ho Chi Minh City, Vietnam
+         CHD	Denver Chinese          Chinese in Denver, Colorado (pilot 3 only)
+	
+         CEU	CEPH                    Utah residents (CEPH) with Northern and Western European ancestry 
+         TSI	Tuscan                  Toscani in Italia 
+         GBR	British                 British in England and Scotland 
+         FIN	Finnish                 Finnish in Finland 
+         IBS	Spanish                 Iberian populations in Spain 
+	
+         YRI	Yoruba                  Yoruba in Ibadan, Nigeria
+         LWK	Luhya                   Luhya in Webuye, Kenya
+         GWD	Gambian                 Gambian in Western Division, The Gambia 
+         MSL	Mende                   Mende in Sierra Leone
+         ESN	Esan                    Esan in Nigeria
+	
+         ASW	African-American SW     African Ancestry in Southwest US  
+         ACB	African-Caribbean       African Caribbean in Barbados
+         MXL	Mexican-American        Mexican Ancestry in Los Angeles, California
+         PUR	Puerto Rican            Puerto Rican in Puerto Rico
+         CLM	Colombian               Colombian in Medellin, Colombia
+         PEL	Peruvian                Peruvian in Lima, Peru
+
+         GIH	Gujarati                Gujarati Indian in Houston, TX
+         PJL	Punjabi                 Punjabi in Lahore, Pakistan
+         BEB	Bengali                 Bengali in Bangladesh
+         STU	Sri Lankan              Sri Lankan Tamil in the UK
+         ITU	Indian                  Indian Telugu in the UK
+        """ 
+
+        """
+        African Ancestry in SW U                ASW]	 62
+        African Caribbean in Barbado            ACB]	120
+        Bengali in Banglades                    BEB]	144
+        British From England and Scotlan        GBR]	100
+        Chinese Dai in Xishuangbanna, China     CDX]	102
+        Colombian in Medellín, Colombia         CLM]	136
+        Esan in Nigeria                         ESN]	173
+        Finnish in Finla                        FIN]	103
+        Gambian in Western Division – Mandin    GWD]	179
+        Gujarati Indians in Houston, Texas, USA GIH]	109
+        Han Chinese in Beijing, Chin            CHB]	120
+        Han Chinese Sout                        CHS]	163
+        Iberian Populations in Spain            IBS]	157
+        Indian Telugu in the U.K                ITU]	118
+        Japanese in Tokyo, Japan                JPT]	120
+        Kinh in Ho Chi Minh City, Vietna        KHV]	124
+        Luhya in Webuye, Ken                    LWK]	120
+        Mende in Sierra Leon                    MSL]	128
+        Mexican Ancestry in Los Angeles CA U    MXL]	 71
+        Peruvian in Lima Per                    PEL]	122
+        Puerto Rican in Puerto Rico             PUR]	139
+        Punjabi in Lahore, Pakistan             PJL]	158
+        Sri Lankan Tamil in the                 STU]	128
+        Toscani in Itali                        TSI]	114
+        Yoruba in Ibadan, Nigeri                YRI]   120
         """
 
-        populations = ['YRI']
-        # populations = ['ASW', 'ACB', 'BEB', 'GBR', 'CDX', 'CLM', 'ESN', 'FIN', 'GWD', 
-        #             'GIH', 'CHB', 'CHS', 'IBS', 'ITU', 'JPT', 'KHV', 'LWK', 'MSL', 
-        #             'MXL', 'PEL', 'PUR', 'PJL', 'STU', 'TSI', 'YRI']
+        #populations = ['YRI']
+
+        populations = ['CHB', 'JPT', 'CHS', 'CDX', 'KHV', 'CHD', 'CEU', 'TSI', 'GBR', 'FIN',
+                       'IBS', 'YRI', 'LWK', 'GWD', 'MSL', 'ESN', 'ASW', 'ACB', 'MXL', 'PUR', 
+                       'CLM', 'PEL', 'GIH', 'PJL', 'BEB', 'STU', 'ITU']
+
+        # populations = ['ASW', 'ACB', 'BEB', 'GBR', 'CEU', 'CDX', 'CLM', 'ESN', 'FIN', 'GWD', 
+                    #    'GIH', 'CHB', 'CHS', 'IBS', 'ITU', 'JPT', 'KHV', 'LWK', 'MSL', 
+                    #    'MXL', 'PEL', 'PUR', 'PJL', 'STU', 'TSI', 'YRI']
 
         for pop in populations:
             

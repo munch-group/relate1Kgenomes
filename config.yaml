@@ -1,5 +1,5 @@
 
-relate_dist_dir: /faststorage/project/ari-intern/people/ari/relate
+relate_dist_dir: /faststorage/project/xy-brain/people/kmt/relate1Kgenomes/relate_v1.2.4_x86_64_static
 ancestral_fa: http://ftp.ensembl.org/pub/release-109/fasta/ancestral_alleles/homo_sapiens_ancestor_GRCh38.tar.gz
 1000G_2504_seq_index: http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/1000G_2504_high_coverage.sequence.index 
 1000G_698_seq_index: http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/1000G_698_related_high_coverage.sequence.index
