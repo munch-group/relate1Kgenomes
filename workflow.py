@@ -194,7 +194,6 @@ def decode_genetic_maps(decode_hg38_sexavg_per_gen, genetic_map, chrom):
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-
 def female_haploid(chrX_filtered_eagle2_phased, chrom):
     """
     turn diploid females (XX) into two individual haplotypes (haploid individuals) like males
@@ -220,9 +219,9 @@ def chrX_haploid(chrX_filtered_eagle2_phased, chrom, first_non_par_pos, last_non
     phased_haplotypes = f'steps/relate/{chrom}/haplotypes.vcf.gz'
     inputs = [chrX_filtered_eagle2_phased]
     outputs = {'haplotypes': phased_haplotypes}
-    options = {'memory': '24g', 'walltime': '03:00:00'}
+    options = {'memory': '24g', 'walltime': '06:00:00'}
     spec = f'''
-    python scripts/haploid_vcf_pseudodip_males.py {chrX_filtered_eagle2_phased} {first_non_par_pos} {last_non_par_pos} | gzip > {phased_haplotypes}
+    python scripts/haploid_vcf_pseudodip_males.py {chrX_filtered_eagle2_phased} {chrom} {first_non_par_pos} {last_non_par_pos} | gzip > {phased_haplotypes}
     '''
 
     return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
@@ -383,6 +382,7 @@ def prepare_files(exclude_list, pop=None, haps=None, sample=None, ancestor=None,
     options = {'memory': '20g', 'walltime': '10:00:00'}
     spec = f'''
     mkdir -p {output_dir}
+    rm -f {' '.join(outputs.values())}
     {config['relate_dist_dir']}/scripts/PrepareInputFiles/PrepareInputFiles.sh --haps {haps} --sample {sample} --ancestor {ancestor} --mask {mask} --remove_ids {exclude_list} --poplabels {poplabels} -o {output_path}
     sleep 20
     '''
@@ -544,6 +544,7 @@ def workflow(working_dir=os.getcwd(), defaults={}, config=None):
                 )
             )
 
+        # turn diploids into haploids
         tgt[f'haploids_{chrom}'] = gwf.target_from_template(
             f'haploids_{chrom}',
             chrX_haploid(
@@ -644,9 +645,13 @@ def workflow(working_dir=os.getcwd(), defaults={}, config=None):
 
         #populations = ['YRI']
 
-        populations = ['CHB', 'JPT', 'CHS', 'CDX', 'KHV', 'CHD', 'CEU', 'TSI', 'GBR', 'FIN',
-                       'IBS', 'YRI', 'LWK', 'GWD', 'MSL', 'ESN', 'ASW', 'ACB', 'MXL', 'PUR', 
-                       'CLM', 'PEL', 'GIH', 'PJL', 'BEB', 'STU', 'ITU']
+        populations = [
+                'CHB', 'JPT', 'CHS', 'CDX', 'KHV', #'CHD', 
+                'CEU', 'TSI', 'GBR', 'FIN', 'IBS', 
+                'YRI', 'LWK', 'GWD', 'MSL', 'ESN', 
+                'ASW', 'ACB', 'MXL', 'PUR', 'CLM', 'PEL', 
+                'GIH', 'PJL', 'BEB', 'STU', 'ITU'
+                ]
 
         # populations = ['ASW', 'ACB', 'BEB', 'GBR', 'CEU', 'CDX', 'CLM', 'ESN', 'FIN', 'GWD', 
                     #    'GIH', 'CHB', 'CHS', 'IBS', 'ITU', 'JPT', 'KHV', 'LWK', 'MSL', 
