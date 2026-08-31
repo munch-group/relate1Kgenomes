@@ -7,6 +7,8 @@ environments:
     - url: https://conda.anaconda.org/gwforg/
     - url: https://conda.anaconda.org/munch-group/
     - url: https://conda.anaconda.org/r/
+    options:
+      pypi-prerelease-mode: if-necessary-or-explicit
     packages:
       linux-64:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/_libgcc_mutex-0.1-conda_forge.tar.bz2
@@ -317,6 +319,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/parso-0.8.5-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/patsy-1.0.2-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pcre2-10.47-haa7fec5_0.conda
+      - conda: https://conda.anaconda.org/munch-group/linux-64/pd-lfs-0.1.33-0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/perl-5.32.1-7_hd590300_perl5.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pexpect-4.9.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pillow-12.0.0-py312h50c33e8_2.conda
@@ -4526,6 +4529,16 @@ packages:
   license_family: BSD
   size: 1222481
   timestamp: 1763655398280
+- conda: https://conda.anaconda.org/munch-group/linux-64/pd-lfs-0.1.33-0.conda
+  noarch: python
+  sha256: d1bc3d9e3a1204848ff40c01774986523fcf71f97e25975f3ded3d8d4314f76c
+  md5: 1c7053c15a7043b0c5f3fd64db050f5c
+  depends:
+  - pandas
+  - pyarrow
+  license: MIT
+  size: 28123
+  timestamp: 1777024054737
 - conda: https://conda.anaconda.org/conda-forge/linux-64/perl-5.32.1-7_hd590300_perl5.conda
   build_number: 7
   sha256: 9ec32b6936b0e37bcb0ed34f22ec3116e75b3c0964f9f50ecea5f58734ed6ce9

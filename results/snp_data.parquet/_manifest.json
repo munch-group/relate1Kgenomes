@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "group_cols": null,
+  "dtypes": {
+    "chrom": "object",
+    "pos": "int64",
+    "neglog10p": "float64",
+    "population": "object",
+    "region": "object"
+  },
+  "files": [
+    {
+      "path": "part-00000.parquet",
+      "partition": {},
+      "size": 41270526,
+      "num_rows": 5378323
+    }
+  ]
+}
