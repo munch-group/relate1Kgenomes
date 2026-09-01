@@ -1,2 +1,2 @@
 files:
-  all_snps_sele.parquet: Genome SNPs with a log p-value below -2w
+  relate_snps_p_vals.parquet: Genome SNPs (hg38) with a log p-value below -2w

@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "group_cols": null,
+  "dtypes": {
+    "chrom": "object",
+    "pop": "object",
+    "pos": "int64",
+    "p_half_freq": "float64",
+    "p_two_alleles": "float64"
+  },
+  "files": [
+    {
+      "path": "part-00000.parquet",
+      "partition": {},
+      "size": 47732326,
+      "num_rows": 4000000
+    },
+    {
+      "path": "part-00001.parquet",
+      "partition": {},
+      "size": 34744716,
+      "num_rows": 2996272
+    }
+  ]
+}
