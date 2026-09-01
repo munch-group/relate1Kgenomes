@@ -1,2 +1,2 @@
 files:
-  snp_data.parquet: P-values for all chromosomes and populations
+  all_snps_sele.parquet: Genome SNPs with a log p-value below -2w

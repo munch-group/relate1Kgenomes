@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "group_cols": null,
+  "dtypes": {
+    "chr1": "object",
+    "ACB": "object",
+    "817341": "int64",
+    "-0.473037": "float64",
+    "-2.8893": "float64"
+  },
+  "files": [
+    {
+      "path": "part-00000.parquet",
+      "partition": {},
+      "size": 47710178,
+      "num_rows": 4000000
+    },
+    {
+      "path": "part-00001.parquet",
+      "partition": {},
+      "size": 34710368,
+      "num_rows": 2996271
+    }
+  ]
+}
